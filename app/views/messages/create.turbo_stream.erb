@@ -1,0 +1,8 @@
+<%# app/views/messages/create.turbo_stream.erb - returned to origin after posting %>
+<%= turbo_stream.append "messages-list-#{new_message.customers.first.id}" do %>
+  <%= render partial: "messages/message", locals: { message: new_message } %>
+<% end %>
+
+<%= turbo_stream.replace "customer-list-item-#{new_message.customers.first.id}" do %>
+  <%= render partial: "customers/list_item", locals: { customer: new_message.customers.first } %>
+<% end %>

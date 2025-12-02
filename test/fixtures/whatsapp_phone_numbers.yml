@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account: one
+  phone_number_id: MyString
+  display_number: MyString
+  status: 1
+  country: MyString
+  quality_rating: MyString
+  meta: 
+
+two:
+  account: two
+  phone_number_id: MyString
+  display_number: MyString
+  status: 1
+  country: MyString
+  quality_rating: MyString
+  meta: 

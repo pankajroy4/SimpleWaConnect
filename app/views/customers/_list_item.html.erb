@@ -1,0 +1,14 @@
+<%= link_to customer_path(customer), data: {  turbo_frame: "chat_frame", action: "click->customers-sidebar#openCustomer", customer_id: customer.id }, class: "block p-3 hover:bg-[#071010]" do %>
+  <div class="chat-item flex items-center space-x-3" data-customers-sidebar-target="item" data-customer-id="<%= customer.id %>" data-customer-name="<%= customer.display_name.to_s.downcase %>" data-customer-number="<%= customer.phone_number.to_s %>">
+    <div class="w-10 h-10 rounded-full bg-[#2b3b3a] flex items-center justify-center text-white font-semibold">
+      <%= customer.display_name.to_s[0]&.upcase || "C" %>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="text-sm font-semibold text-gray-100 truncate"><%= customer.display_name %></div>
+        <%= render partial: "customers/last_message", locals: { customer: customer } %> 
+    </div>
+    <div class="ml-3">
+      <span data-customers-sidebar-target="badge" data-customer-id="<%= customer.id %>" class="unread-badge hidden items-center justify-center font-bold bg-emerald-500 text-white text-[12px] rounded-full px-2 py-0.5">0</span>
+    </div>
+  </div>
+<% end %>

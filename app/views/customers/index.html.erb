@@ -1,0 +1,17 @@
+<div class="w-full h-screen flex items-center justify-center">
+  <div class="chat-window flex border border-[#2A3942] w-full max-w-[1220px] h-[calc(100vh-64px)] rounded-[10px] overflow-hidden shadow-[0_12px_30px_rgba(2,6,23,0.4)]">
+
+    <%= render partial: "customers/left_side_bar" %>
+    <%= turbo_stream_from "customers_list" %>
+
+    <turbo-frame id="chat_frame" class="flex-1 flex flex-col bg-transparent">
+      <div class="w-full h-full flex items-center justify-center">
+        <div class="text-center text-gray-300">
+          <div class="text-2xl font-semibold mb-2">Select a conversation</div>
+          <div class="text-sm text-gray-400">or start a new chat</div>
+        </div>
+      </div>
+    </turbo-frame>
+
+  </div>
+</div>

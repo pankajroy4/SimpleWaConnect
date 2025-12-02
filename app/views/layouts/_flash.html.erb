@@ -1,0 +1,11 @@
+<% flash.each do |flash_type, message| %>
+	<% if flash_type == "alert" %>
+		<div class="flash_message text-white px-6 py-3 rounded-lg shadow-lg bg-red-600" data-controller ='removals', data-action="animationend->removals#remove" >
+			<h6 class = "text-center mb-0"><%= message %></h6>
+		</div>
+	<% else %>
+		<div class="flash_message text-white px-6 py-3 rounded-lg shadow-lg bg-green-600" data-controller ='removals', data-action="animationend->removals#remove" >
+			<h6 class = "text-center mb-0"><%= message %></h6>
+		</div>
+	<% end %> 
+<% end %> 

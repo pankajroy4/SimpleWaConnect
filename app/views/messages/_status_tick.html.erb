@@ -1,0 +1,12 @@
+<% status_icon_classes = {
+  queued: "bx bx-time text-gray-400",
+  processing: "bx bx-loader-alt animate-spin text-gray-400",
+  sent: "bx bx-check text-gray-300",
+  delivered: "bx bx-check-double text-gray-300",
+  read: "bx bx-check-double text-blue-400",
+  failed: "bx bx-error text-red-500"
+} %>
+
+<% icon_class = status_icon_classes[message.status.to_sym] || "bx bx-help-circle text-gray-500" %>
+
+<i id="<%= dom_id(message, :status) %>" class="text-lg font-semibold <%= icon_class %>" title="<%= message.status %>"></i>

@@ -1,0 +1,9 @@
+<% if resource.errors.any? %>
+  <div class="fixed top-4 inset-x-0 flex justify-center z-50">
+    <div class="flash" id="flash">
+      <div class="flash_message text-white px-6 py-3 rounded-lg shadow-lg bg-red-600" data-controller ='removals', data-action="animationend->removals#remove" >
+          <%= resource.errors.full_messages.to_sentence %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,54 @@
+<div data-controller="customers-sidebar" class="w-80 bg-[#0f1b1c] border-r  border-[#2A3942] flex flex-col">
+  <!-- Top header -->
+  <div class="p-4 flex items-center justify-between border-b border-[#122022]">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-[#2b3b3a] flex items-center justify-center text-white font-semibold">
+        <%= current_user&.name.to_s[0]&.upcase || "U" %>
+      </div>
+      <div>
+        <div class="text-sm font-semibold text-gray-100"><%= current_user&.name || "You" %></div>
+        <div class="text-xs text-gray-400"><%= current_user&.role.capitalize || "You" %></div>
+      </div>
+    </div>
+
+    <!-- logout -->
+    <div class="flex items-center space-x-2 text-gray-300">
+      <details class="relative">
+        <summary class="list-none p-2 rounded hover:bg-[#142626] cursor-pointer flex items-center justify-center text-gray-300" title="Menu">
+          <i class='bx bx-dots-vertical-rounded text-xl'></i>
+        </summary>
+
+        <div class="absolute right-0 mt-2 w-32 bg-[#0d1a1a] text-white rounded-md shadow border border-gray-700 z-50">
+          <%= button_to destroy_user_session_path, method: :delete, data: { turbo_method: :delete, turbo_frame: "_top" }, class: "w-full flex items-center space-x-2 px-4 py-2 text-sm hover:bg-[#142626] hover:crsor-pointer" do %>
+            <i class='bx bx-og-out text-lg'></i>
+            <span>Logout</span>
+          <% end %>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="p-3 border-b border-[#122022]">
+    <div class="relative">
+      <i class='bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg'></i>
+     <input type="search"
+       placeholder="Search"
+       data-customers-sidebar-target="search"
+       data-action="input->customers-sidebar#filter"
+       class="w-full pl-10 pr-3 py-2 rounded bg-[#0b1417] text-gray-200 placeholder-gray-500 border border-transparent focus:outline-none focus:ring-1 focus:ring-[#055e4c]" />
+
+    </div>
+  </div>
+
+  <!-- Chat list -->
+  <div id="chats-list" class="flex-1 overflow-auto" >
+    <% @customers.each do |customer| %>
+      <%= render partial: 'customers/list_item', locals: { customer: customer } %>
+    <% end %>
+  </div>
+
+  <div class="p-3 border-t border-[#122022] text-xs text-center text-gray-400">
+    © <%= Time.current.year %> • Simple WA Connect 
+  </div>
+</div>

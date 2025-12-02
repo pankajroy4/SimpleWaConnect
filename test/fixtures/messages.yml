@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  account: one
+  template: one
+  user: one
+  recipients: 
+  payload: 
+  status: MyString
+  remote_id: MyString
+  response_json: 
+  error_text: MyText
+
+two:
+  account: two
+  template: two
+  user: two
+  recipients: 
+  payload: 
+  status: MyString
+  remote_id: MyString
+  response_json: 
+  error_text: MyText

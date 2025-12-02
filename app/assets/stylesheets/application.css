@@ -1,0 +1,51 @@
+/*
+ * This is a manifest file that'll be compiled into application.css.
+ *
+ * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
+ * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
+ * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
+ * depending on specificity.
+ *
+ * Consider organizing styles into separate files for maintainability.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@keyframes appear-then-fade {
+  0%,
+  100% {
+    opacity: 0
+  }
+  5%,
+  60% {
+    opacity: 1
+  }
+}
+
+.flash_message {
+  animation: appear-then-fade 8s both;
+}
+
+body.whatsapp-dark {
+  background-color: #0b1417;
+  background-image:
+    radial-gradient(circle at 40% 20%, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 220px 220px, 180px 180px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.message-list-scroll::-webkit-scrollbar { width: 10px; }
+.message-list-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 10px; }
+.message-list-scroll::-webkit-scrollbar-track { background: transparent; }
+
+.hide-scrollbar {
+  -ms-overflow-style: none;    
+  scrollbar-width: none;        
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;               
+}

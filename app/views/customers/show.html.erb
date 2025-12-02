@@ -1,0 +1,52 @@
+<!-- app/views/customers/show.html.erb -->
+<turbo-frame id="chat_frame">
+  <script>window.CURRENT_USER_ID = <%= current_user.id %>;</script>
+  <script>window.OPEN_CUSTOMER_ID = <%= @customer.id %>;</script>
+  <div class="flex flex-col h-full w-full">
+    <section class="flex flex-col flex-1 h-full">
+      <header class="p-4 border-b border-[#122022] flex items-center justify-between bg-[#061010]">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-[#2b3b3a] flex items-center justify-center text-white font-semibold">
+            <%= (@customer&.name.presence || @customer&.display_name || "U")[0].upcase %>
+          </div>
+          <div class="flex flex-col leading-tight">
+            <div class="font-semibold text-lg">
+              <%= @customer&.display_name || "Unknown User" %>
+            </div>
+            <div class="text-xs text-gray-400">
+              Last active:
+              <span id="<%= dom_id(@customer, :last_active) %>"> 
+               <%= render partial: "customers/last_active", locals: { customer: @customer } %>
+              </span>
+              ago
+            </div>
+          </div>
+        </div>
+        <details class="relative">
+          <summary class="list-none w-7 h-7 flex items-center justify-center rounded-full bg-[#112020] text-gray-300 hover:bg-[#142626] cursor-pointer">
+            <i class='bx bx-info-circle text-xl'></i>
+          </summary>
+          <div class="absolute right-0 mt-2 w-32 bg-[#0d1a1a] text-white rounded-md shadow border border-gray-700 z-50">
+            <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { turbo_method: :delete, turbo_frame: "_top" }, class: "w-full text-left px-4 py-2 text-sm hover:bg-[#142626] hover:cursor-pointer" %>
+          </div>
+        </details>
+      </header>
+
+      <main data-controller="auto-scroll scrollbar infinite-scroll" data-auto-scroll-customer-id-value="<%= @customer.id %>"  data-infinite-scroll-customer-id-value="<%= @customer.id %>"  class="flex-1 overflow-y-auto p-4" id="messages-list-<%= @customer.id %>">
+
+        <div id="infinite-loading-<%= @customer.id %>" 
+            class="text-center text-gray-400 my-4 hidden flex items-center justify-center">
+          <i class='bx bx-loader-alt bx-spin text-2xl'></i>
+        </div>
+
+        <div id="messages-container-<%= @customer.id %>" data-infinite-scroll-target="container">
+          <%= render partial: "messages/messages", locals: { messages: @messages } %>
+        </div>
+
+      </main>
+      <turbo-frame id="new_message">
+        <%= render partial: "messages/form", locals: { customer: @customer } %>
+      </turbo-frame>
+    </section>
+  </div>
+</turbo-frame>
