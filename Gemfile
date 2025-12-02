@@ -72,7 +72,7 @@ gem "foreman"
 gem "httparty"
 gem "devise"
 gem "devise-jwt"
-gem 'sidekiq', '~> 8.0', '>= 8.0.5'
+gem 'sidekiq', '~> 8.0'
 gem 'redis', '~> 5.4', '>= 5.4.1'
 gem 'rack-attack', '~> 6.7'
 gem 'rack-cors', '~> 3.0'
