@@ -37,6 +37,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.bigint "account_id", null: false
     t.string "phone_number"
     t.string "name"
+    t.boolean "bulk_created", default: true
     t.datetime "last_window_opened_at"
     t.jsonb "profile"
     t.datetime "created_at", null: false

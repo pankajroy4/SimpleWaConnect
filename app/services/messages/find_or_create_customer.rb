@@ -1,5 +1,5 @@
 class Messages::FindOrCreateCustomer
-  def self.call(account:, message:, recipients:)
+  def self.call(account:, message:, recipients:, bulk_created:)
     phone_numbers = recipients.map { |r| r[:mobile_no] }
 
     # Load existing customers once
@@ -8,7 +8,7 @@ class Messages::FindOrCreateCustomer
     # Build missing customers
     new_records = recipients.filter_map do |r|
       next if existing[r[:mobile_no]]
-      Customer.new(account: account, phone_number: r[:mobile_no], name: r[:name])
+      Customer.new(account: account, phone_number: r[:mobile_no], name: r[:name], bulk_created: bulk_created)
     end
 
     # Bulk insert new customers

@@ -45,36 +45,6 @@ module Messages
     private
 
     def process_single_message(validated_params, input_index)
-      ActiveRecord::Base.transaction do
-        message = Message.create!(
-          account: @account,
-          user: @user,
-          message_type: Message.message_types[validated_params[:message_type]],
-          template: validated_params[:template],
-          payload: validated_params.except(:template, :recipients, :sender_phone_number),
-          bulk_created: @bulk_created,
-          direction: "outgoing",
-          status: "queued",
-        )
-
-        Messages::FindOrCreateCustomer.call(
-          account: @account,
-          message: message,
-          recipients: validated_params[:recipients],
-        )
-
-        Whatsapp::MessageDeliverJob.perform_later(message, message.id)
-
-        @queued_ids << message.id
-      end
-    rescue => e
-      @errors << {
-        input_index: input_index,
-        error: e.message,
-      }
-    end
-
-    def process_single_message(validated_params, input_index)
       recipient_errors = validated_params.delete(:recipient_errors) || []
 
       if validated_params[:recipients].empty?
@@ -89,6 +59,7 @@ module Messages
         message = Message.create!(
           account: @account,
           user: @user,
+          bulk_created: @bulk_created,
           message_type: Message.message_types[validated_params[:message_type]],
           template: validated_params[:template],
           payload: validated_params.except(:template, :recipients, :sender_phone_number),
@@ -100,6 +71,7 @@ module Messages
           account: @account,
           message: message,
           recipients: validated_params[:recipients],
+          bulk_created: @bulk_created,
         )
 
         Whatsapp::MessageDeliverJob.perform_later(message, message.id)
