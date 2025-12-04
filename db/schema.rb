@@ -76,9 +76,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.jsonb "header_variables", default: []
     t.jsonb "body_variables", default: []
     t.jsonb "button_variables", default: []
-    t.integer "header_var_count", default: 0
-    t.integer "body_var_count", default: 0
-    t.integer "button_var_count", default: 0
+    t.jsonb "buttons", default: []
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

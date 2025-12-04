@@ -123,7 +123,6 @@ module Whatsapp
       @template.button_variables.present?
     end
 
-    # Need to fix it.
     def button_components
       @template.buttons.each_with_index.map do |btn, idx|
         case btn["type"]
@@ -140,7 +139,8 @@ module Whatsapp
             sub_type: "url",
             index: idx,
             parameters: [
-              { type: "text", text: @params[:button_vars][btn["variable"]].to_s },
+              { type: "text", text: @params[:button_vars][btn["variable"]&.to_sym].to_s },
+              # Here, the key 'text' is variable that we want to append in the url.
             ],
           }
         else
@@ -150,57 +150,3 @@ module Whatsapp
     end
   end
 end
-
-# get payload:
-# ================
-# payload = {
-#   messaging_product: "whatsapp",
-#   to: params[:to],
-#   type: "template",
-#   template: {
-#     name: template.name,
-#     language: { code: params[:language_code] || template.language_code },
-#     components: Whatsapp::TemplatePayloadBuilder.new(template: template, params: params).components
-#   }
-# }
-
-# API CALL:
-# ===================
-
-# # Template message
-# {
-#   "message": {
-#     "message_type": "template_message",
-#     "recipients": [{"name": "Mohan", "mobile_no": "917436450082"}, {"name": "Mohan", "mobile_no":"918546230645"}],
-#     "sender_phone_number": "7512460675", #(Optional) If want to send message from a particular no.
-#     "template_name": "order_update",
-#     "language_code": "en_US", (Optional)
-
-#     "header_vars": {
-#       "date": "23 Feb",
-#     },
-
-#     "body_vars": {
-#       "name": "John",
-#       "order_id": "ORD77891",
-#     },
-
-#     "button_vars": {
-#       "tracking_code": "ZX9911",
-#     },
-
-#     "media_url": "https://...",
-#     "filename": "receipt.pdf",
-#   }
-# }
-
-# # Non-Template message
-
-# {
-#   "message": {
-#     "message_type": "non_template_message",
-#     "recipients": [{"name": "Mohan", "mobile_no": "917436450082"}, {"name": "Mohan", "mobile_no": "918546230645"}],
-#     "sender_phone_number": "7512460675", #(Optional) - If want to send message from a particular no.
-#     "body_text": "xyz...."
-#   }
-# }

@@ -1,0 +1,66 @@
+{
+  "messages": [
+    {
+      "message_type": "template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" },
+        { "name": "Rahul", "mobile_no": "916385627456" }
+      ],
+      "sender_phone_number": "5551811580",
+      "template_name": "document_template",
+      "language_code": "en_US",
+
+      "header_vars": {
+        "date": "23 Feb"
+      },
+
+      "body_vars": {
+        "amount": "500 Rs",
+        "location": "Gopur Square",
+        "doc_type": "Invoice"
+      },
+
+      "button_vars": {
+        "tracking_code": "ZX9911"
+      },
+
+      "media_url": "https://7990e92da0d3.ngrok-free.app/dummy.pdf",
+      "filename": "invoice.pdf"
+    },
+    {
+      "message_type": "template_message",
+      "recipients": [
+        { "name": "John", "mobile_no": "918556237856" },
+        { "name": "Daniel", "mobile_no": "917856253220" }
+      ],
+      "sender_phone_number": "5551811580",
+      "template_name": "vid_template",
+      "language_code": "en_US",
+
+      "header_vars": {
+        "brand_name": "Narmda Dairy"
+      },
+
+      "body_vars": {
+        "user_name": "Radha"
+      },
+
+      "button_vars": {
+        "url_params": "orders"
+      },
+
+      "media_url": "https://7990e92da0d3.ngrok-free.app/dummy.mp4",
+      "filename": "Advertisement video"
+    }
+  ]
+}
+
+
+
+{
+  "_comment_1": "The fields `sender_phone_number` and `language_code` are optional.",
+  "_comment_2": "The fields `header_vars`, `body_vars`, and `button_vars` depend on the selected template. If the template requires these fields, they must be included in the API payload.",
+  "_comment_3": "The field `filename` is required only when the selected template is of type 'document'.",
+  "_comment_4": "The field `media_url` is required for any template that uses a media header (image, video, or document).",
+  "_comment_5": "Providing extra keys not required by a template will not cause issues. The backend will simply ignore and discard any unsupported fields."
+}
