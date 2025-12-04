@@ -15,13 +15,13 @@ Account.create!(
 
 User.create!(
   email: "test@gmail.com",
+  name: "Mohan",
   password: "111111",
   password_confirmation: "111111",
   account: Account.last,
   role: "admin",
 )
 
-# Create Templates record
 Template.create!(
   account: Account.last,
   name: "hello_world",
@@ -31,9 +31,6 @@ Template.create!(
   header_variables: [],
   body_variables: [],
   button_variables: [],
-  header_var_count: 0,
-  body_var_count: 0,
-  button_var_count: 0,
   active: true,
 )
 
@@ -46,9 +43,6 @@ Template.create!(
   header_variables: [],
   body_variables: [],
   button_variables: [],
-  header_var_count: 0,
-  body_var_count: 0,
-  button_var_count: 0,
   active: true,
 )
 
@@ -61,9 +55,31 @@ Template.create!(
   header_variables: [],
   body_variables: ["amount", "location", "doc_type"],
   button_variables: [],
-  header_var_count: 0,
-  body_var_count: 3,
-  button_var_count: 0,
+  active: true,
+)
+
+Template.create!(
+  account: Account.last,
+  name: "invoice_template",
+  language_code: "en_US",
+  has_header: true,
+  media_type: "document",
+  header_variables: [],
+  body_variables: ["user_name"],
+  button_variables: [],
+  active: true,
+)
+
+Template.create!(
+  account: Account.last,
+  name: "text_template",
+  language_code: "en_US",
+  has_header: true,
+  media_type: "text",
+  header_variables: ["brand_name"],
+  body_variables: ["user_name"],
+  button_variables: ["url_param"],
+  buttons: [{ type: "quick_reply" }, { type: "url", variable: "url_param" }],
   active: true,
 )
 
