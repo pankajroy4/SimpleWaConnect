@@ -7,11 +7,12 @@ class User < ApplicationRecord
   belongs_to :account
 
   enum :role, { admin: "admin", staff: "staff" }
-  before_validation :set_default_account, on: :create
+  validates :role, presence: true
+  # before_validation :set_default_account, on: :create
 
   private
 
-  def set_default_account
-    self.account ||= Account.last
-  end
+  # def set_default_account
+  #   self.account ||= Account.last
+  # end
 end
