@@ -19,6 +19,17 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # protected
+  def after_sign_in_path_for(resource)
+    if resource.superadmin?
+      rails_admin_path
+    else
+      welcomes_path
+    end
+  end
+
+  def after_sign_out_path_for(resource_or_scope)
+    new_user_session_path
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_in_params

@@ -4,7 +4,7 @@ class Whatsapp::Webhook::StatusHandlerService
       remote_id = status["id"]
       state = status["status"]
 
-      message = Message.find_by(remote_id: remote_id)
+      message = Message.find_by(remote_id_meta: remote_id)
       next unless message
 
       case state

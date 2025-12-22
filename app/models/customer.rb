@@ -5,6 +5,7 @@ class Customer < ApplicationRecord
   has_many :messages, through: :customer_messages
 
   validates :phone_number, presence: true
+  after_create_commit :broadcast_creation
 
   def display_name
     name.presence || phone_number
@@ -17,5 +18,15 @@ class Customer < ApplicationRecord
   def unread_count
     # incoming messages not yet read
     Message.joins(:customer_messages).where(customer_messages: { customer_id: id }).where(direction: "incoming").where.not(status: "read").count
+  end
+
+  def incoming?
+    direction == "incoming"
+  end
+
+  private
+
+  def broadcast_creation
+    broadcast_append_to "customers_list", target: "chats-list", partial: "customers/list_item", locals: {customer: self }
   end
 end

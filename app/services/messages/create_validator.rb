@@ -205,7 +205,7 @@ class Messages::CreateValidator
     end
 
     clean = @params.slice(*allowed)
-    clean.merge(template: @template, sender_phone_number_id: @sender.phone_number_id)
+    clean.merge(template: @template, sender_phone_number_id: @sender.phone_number_id_meta)
   end
 
   def base_allowed_keys

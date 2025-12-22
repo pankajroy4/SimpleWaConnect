@@ -83,7 +83,7 @@ module Messages
 
     def default_sender_number
       accnt = @account.whatsapp_phone_numbers.active.first
-      [accnt.phone_number_id, accnt.display_number]
+      [accnt.phone_number_id_meta, accnt.display_number]
     end
   end
 end

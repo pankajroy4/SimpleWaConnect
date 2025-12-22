@@ -9,6 +9,10 @@ class Api::V1::SessionsController < Devise::SessionsController
     resource.update(jti: SecureRandom.uuid)
     warden.logout(resource_name)
 
+    unless resource.admin?
+      return render json: { error: "Unauthorized. Must be Admin User" }, status: :unauthorized
+    end
+
     sign_in(resource_name, resource, store: false)
     token = request.env["warden-jwt_auth.token"]
 

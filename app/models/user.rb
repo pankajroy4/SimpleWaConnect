@@ -4,15 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
-  belongs_to :account
+  belongs_to :account, optional: true
 
-  enum :role, { admin: "admin", staff: "staff" }
-  validates :role, presence: true
-  # before_validation :set_default_account, on: :create
-
-  private
-
-  # def set_default_account
-  #   self.account ||= Account.last
-  # end
+  enum :role, { superadmin: "superadmin", admin: "admin", staff: "staff" }
+  validates :role, :name, :email, :password, presence: true
+  validates :account, presence: true, unless: :superadmin?
 end

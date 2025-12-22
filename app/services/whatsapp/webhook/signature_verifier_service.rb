@@ -6,9 +6,9 @@ class Whatsapp::Webhook::SignatureVerifierService
       account = Account
         .joins(:whatsapp_credential, :whatsapp_phone_numbers)
         .find_by(
-          whatsapp_credentials: { waba_id: waba_id },
+          whatsapp_credentials: { waba_id_meta: waba_id },
           whatsapp_phone_numbers: {
-            phone_number_id: phone_number_id,
+            phone_number_id_meta: phone_number_id,
             status: WhatsappPhoneNumber.statuses[:active],
           },
         )

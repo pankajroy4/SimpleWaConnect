@@ -2,8 +2,7 @@ class Template < ApplicationRecord
   class MissingVariablesError < StandardError; end
 
   belongs_to :account
-
-  validates :name, :language_code, presence: true
+  validates :name, :language_code, :account, :media_type, presence: true
 
   def validate_variables_presence!(vars)
     required = Array(variables).map(&:to_s)

@@ -4,7 +4,7 @@ Account.create!(
   platform: "simpledairy",
   whatsapp_phone_numbers_attributes: [ # Nested attributes for phone numbers
     {
-      phone_number_id: "809219032271174",
+      phone_number_id_meta: "809219032271174",
       display_number: "5551811580",  # Whatsapp account mobile display number - without country code
       status: :active,
       country_code: "1",
@@ -12,7 +12,7 @@ Account.create!(
   ],
 )
 
-WhatsappPhoneNumber.create(account: Account.first, phone_number_id: "809219032271174", display_number: "5551811580", status: 0, country_code: "1")
+WhatsappPhoneNumber.create(account: Account.first, phone_number_id_meta: "809219032271174", display_number: "5551811580", status: 0, country_code: "1")
 
 User.create!(
   email: "test@gmail.com",
@@ -22,9 +22,16 @@ User.create!(
   role: "admin",
 )
 
+User.create!(
+  email: "superadmin@gmail.com",
+  password: "111111",
+  password_confirmation: "111111",
+  role: "superadmin",
+)
+
 # Create Templates record
 Template.create!(
-  account: Account.last,
+  account: Account.first,
   name: "hello_world",
   language_code: "en_US",
   has_header: false,
@@ -36,7 +43,7 @@ Template.create!(
 )
 
 Template.create!(
-  account: Account.last,
+  account: Account.first,
   name: "vid_template",
   language_code: "en_US",
   has_header: true,
@@ -48,7 +55,7 @@ Template.create!(
 )
 
 Template.create!(
-  account: Account.last,
+  account: Account.first,
   name: "document_template",
   language_code: "en_US",
   has_header: true,
@@ -60,7 +67,7 @@ Template.create!(
 )
 
 Template.create!(
-  account: Account.last,
+  account: Account.first,
   name: "invoice_template",
   language_code: "en_US",
   has_header: true,
@@ -72,7 +79,7 @@ Template.create!(
 )
 
 Template.create!(
-  account: Account.last,
+  account: Account.first,
   name: "text_template",
   language_code: "en_US",
   has_header: true,
@@ -85,7 +92,7 @@ Template.create!(
 )
 
 # Create whatsapp variables
-WhatsappCredential.create(account: Account.first, business_id: "1234", waba_id: "829580149631389", app_id: "123", app_secret: "4ac27f605e8333f79050446e9fc851f7", webhook_verify_token: "EAAU5YcWjogUBP6jnEdiFo9B50YPJTneNSx4qvSFkmD64vyVVnZAO8HeTb7s10rCT8bZAcQeDrNgYeiPxuAbTBAlsARO8ZCa5d3qKKLTYV9xPjnpiZACGI7ChDRxYpJZB1cHrHL5lI26Ms00lEuCeAfY31EmQznOUpP7xMycPC7xoO7Huha2yGee8rPOhfpJdTnyYTmjdpqQEOBDr6agnsCc5eHq7ZCSHZAAXW2VBG8HqShkJDTME8elOBJ1j1mopDGMP2lQF09rliLZCmRp0ZCZBD2MpcJk9jJDZBapQuOZCJOsZD", access_token: "EAAU5YcWjogUBP1rfyFRjBcZBx0EJZBZBe8ZCyuyPZCcLRDYFENYwNgiH7ifszPTjIwbzfMgcZBZBhiMakiMB2YfczlDELsXa5jLycZAZCOyVgfmZB0Rk9fB3VVWahI3ZAoC99UOqRGNnkujzSux8QziSYDObbMnEFnKJkxhXctZBdcutyojLpAX7F5nYNFjScsv9h5D3xFZAFjrNAWMVMVlFHrcxZCJ2KSEfRYswIUrkRVRWfa")
+WhatsappCredential.create(account: Account.first, business_id_meta: "1234", waba_id_meta: "829580149631389", app_id_meta: "123", app_secret: "4ac27f605e8333f79050446e9fc851f7", webhook_verify_token: "EAAU5YcWjogUBP6jnEdiFo9B50YPJTneNSx4qvSFkmD64vyVVnZAO8HeTb7s10rCT8bZAcQeDrNgYeiPxuAbTBAlsARO8ZCa5d3qKKLTYV9xPjnpiZACGI7ChDRxYpJZB1cHrHL5lI26Ms00lEuCeAfY31EmQznOUpP7xMycPC7xoO7Huha2yGee8rPOhfpJdTnyYTmjdpqQEOBDr6agnsCc5eHq7ZCSHZAAXW2VBG8HqShkJDTME8elOBJ1j1mopDGMP2lQF09rliLZCmRp0ZCZBD2MpcJk9jJDZBapQuOZCJOsZD", access_token: "EAAU5YcWjogUBP1rfyFRjBcZBx0EJZBZBe8ZCyuyPZCcLRDYFENYwNgiH7ifszPTjIwbzfMgcZBZBhiMakiMB2YfczlDELsXa5jLycZAZCOyVgfmZB0Rk9fB3VVWahI3ZAoC99UOqRGNnkujzSux8QziSYDObbMnEFnKJkxhXctZBdcutyojLpAX7F5nYNFjScsv9h5D3xFZAFjrNAWMVMVlFHrcxZCJ2KSEfRYswIUrkRVRWfa")
 
 # API Payload Structure:
 
