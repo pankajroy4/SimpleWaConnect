@@ -59,7 +59,7 @@ module Whatsapp
 
       def resolve_account_and_customer(msg)
         phone = normalize_phone(msg["from"])
-        account = WhatsappPhoneNumber.find_by(phone_number_id: @phone_number_id)&.account
+        account = WhatsappPhoneNumber.find_by(phone_number_id_meta: @phone_number_id)&.account
         return [nil, nil] unless account
 
         customer = Customer.find_or_create_by!(account_id: account.id, phone_number: phone)
@@ -68,7 +68,7 @@ module Whatsapp
 
       def update_customer_window(msg)
         phone = normalize_phone(msg["from"])
-        account = WhatsappPhoneNumber.find_by(phone_number_id: @phone_number_id)&.account
+        account = WhatsappPhoneNumber.find_by(phone_number_id_meta: @phone_number_id)&.account
         return unless account
 
         customer = Customer.find_or_create_by!(account_id: account.id, phone_number: phone)
@@ -84,7 +84,7 @@ module Whatsapp
           bulk_created: false,
           direction: "incoming",
           status: "read",
-          remote_id: remote_id,
+          remote_id_meta: remote_id,
         ).tap { |m| m.customers << @customer }
       end
 

@@ -56,7 +56,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.string "status", default: "queued"
     t.string "message_type"
     t.string "direction"
-    t.string "remote_id"
+    t.string "remote_id_meta"
     t.jsonb "response_json", default: {}
     t.text "error_text"
     t.datetime "created_at", null: false
@@ -105,9 +105,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
   create_table "whatsapp_credentials", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.text "access_token"
-    t.string "business_id"
-    t.string "waba_id"
-    t.string "app_id"
+    t.string "business_id_meta"
+    t.string "waba_id_meta"
+    t.string "app_id_meta"
     t.string "app_secret"
     t.string "webhook_verify_token"
     t.jsonb "meta", default: {}
@@ -118,7 +118,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
 
   create_table "whatsapp_phone_numbers", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "phone_number_id", null: false
+    t.string "phone_number_id_meta", null: false
     t.string "display_number"
     t.integer "status", default: 0, null: false
     t.string "country_code", default: "91"
@@ -127,7 +127,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.index ["account_id"], name: "index_whatsapp_phone_numbers_on_account_id"
     t.index ["account_id"], name: "unique_active_phone_per_account", unique: true, where: "(status = 0)"
     t.index ["display_number"], name: "index_whatsapp_phone_numbers_on_display_number"
-    t.index ["phone_number_id"], name: "index_whatsapp_phone_numbers_on_phone_number_id", unique: true
+    t.index ["phone_number_id_meta"], name: "index_whatsapp_phone_numbers_on_phone_number_id_meta", unique: true
   end
 
   add_foreign_key "customer_messages", "customers"

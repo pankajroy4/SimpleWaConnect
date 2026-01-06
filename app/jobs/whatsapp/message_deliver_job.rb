@@ -2,28 +2,26 @@ class Whatsapp::MessageDeliverJob < ApplicationJob
   class MessageDeliveryError < StandardError; end
 
   queue_as :default
-  sidekiq_options retry: 0
+  retry_on MessageDeliveryError, attempts: 1
 
-  MESSAGE_JOB_LOGGER = Logger.new(Rails.root.join("log/message_jobs.log").to_s)
+  MESSAGE_JOB_LOGGER = Logger.new(Rails.root.join("log/message_jobs.log"))
   MESSAGE_JOB_LOGGER.level = Logger::INFO
 
-  sidekiq_retries_exhausted do |job, ex|
-    message_id = job.dig("args", 0, "arguments").second
-    message = Message.find_by(id: message_id)
-
-    # gid_hash = job.dig("args", 0, "arguments").first
-    # message = GlobalID::Locator.locate(gid_hash["_aj_globalid"]) rescue nil
+  # Final failure
+  discard_on MessageDeliveryError do |job, error|
+    message = job.arguments.first
 
     if message
-      message.update!(status: "failed", error_text: ex.message)
-      MESSAGE_JOB_LOGGER.error("FINAL FAILURE message_id=#{message.id} - #{ex.message}")
+      message.update!(status: "failed", error_text: error.message)
+      MESSAGE_JOB_LOGGER.error("FINAL FAILURE message_id=#{message.id} - #{error.message}")
     else
-      MESSAGE_JOB_LOGGER.error("FINAL FAILURE - could not resolve message from job args")
+      MESSAGE_JOB_LOGGER.error("FINAL FAILURE - message not available in job arguments")
     end
   end
 
   def perform(message, message_id)
     MESSAGE_JOB_LOGGER.info("START message_id=#{message_id}")
+
     result = Whatsapp::MessageDeliveryService.call(message)
 
     wa_id = result.response&.first&.parsed_response&.dig("messages", 0, "id")
@@ -32,17 +30,17 @@ class Whatsapp::MessageDeliverJob < ApplicationJob
     if result.success?
       message.update!(
         status: "sent",
-        remote_id: wa_id,
+        remote_id_meta: wa_id,
         response_json: response_json,
       )
-      MESSAGE_JOB_LOGGER.info("SENT message_id=#{message_id}")
+      MESSAGE_JOB_LOGGER.info("SENT message_id=#{message.id}")
     else
       message.update!(
         status: "processing",
         error_text: result.error_text,
         response_json: response_json,
       )
-      MESSAGE_JOB_LOGGER.error("ATTEMPT FAILED message_id=#{message_id} - #{result.error_text}")
+      MESSAGE_JOB_LOGGER.error("ATTEMPT FAILED message_id=#{message.id} - #{result.error_text}")
       raise MessageDeliveryError, result.error_text
     end
   end

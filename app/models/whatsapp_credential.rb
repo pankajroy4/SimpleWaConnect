@@ -5,5 +5,5 @@ class WhatsappCredential < ApplicationRecord
   encrypts :app_secret, deterministic: true
   encrypts :webhook_verify_token, deterministic: true
 
-  validates :access_token, :webhook_verify_token, :app_secret, :waba_id, presence: true
+  validates :access_token, :webhook_verify_token, :app_secret, :waba_id_meta, presence: true
 end

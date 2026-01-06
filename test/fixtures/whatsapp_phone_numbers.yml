@@ -2,7 +2,7 @@
 
 one:
   account: one
-  phone_number_id: MyString
+  phone_number_id_meta: MyString
   display_number: MyString
   status: 1
   country: MyString
@@ -11,7 +11,7 @@ one:
 
 two:
   account: two
-  phone_number_id: MyString
+  phone_number_id_meta: MyString
   display_number: MyString
   status: 1
   country: MyString

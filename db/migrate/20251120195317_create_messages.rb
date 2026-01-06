@@ -10,7 +10,7 @@ class CreateMessages < ActiveRecord::Migration[8.0]
       t.string :status, default: "queued"
       t.string :message_type
       t.string :direction
-      t.string :remote_id
+      t.string :remote_id_meta
       t.jsonb :response_json, default: {}
       t.text :error_text
       t.timestamps

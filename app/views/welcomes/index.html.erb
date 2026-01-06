@@ -26,6 +26,12 @@
       <%= link_to "Log out", destroy_user_session_path, class: "w-full text-sm inline-flex items-center justify-center bg-red-600 hover:bg-red-500 text-white font-medium rounded py-2 transition", data: { 'turbo-method': :delete } %>
 
       <%= link_to "Update Account", edit_user_registration_path, class: "w-full text-sm inline-flex items-center justify-center bg-[#4285F4] hover:bg-[#357ae8] text-white font-medium rounded py-2 transition" %>
+
+      <%# if current_user.superadmin? %>
+        <%#= link_to "Admin Panel", rails_admin_path, class: "w-full text-sm inline-flex items-center justify-center bg-green-600 hover:bg-green-500 text-white font-medium rounded py-2 transition" %>
+      <%# end %>
+
+      <%#= button_to "Log out", destroy_user_session_path, method: :delete, class: "w-full text-sm inline-flex items-center justify-center bg-red-600 hover:bg-red-500 text-white font-medium rounded py-2 transition cursor-pointer", form: { data: { turbo: true } } %>
     </div>
   </div>
 </div>
