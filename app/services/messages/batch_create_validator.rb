@@ -70,7 +70,7 @@ class Messages::BatchCreateValidator
 
     # One DB query
     @templates = @account.templates
-      .where(needed.map { |name, lang| { name: name, language_code: lang } }.reduce(:or))
+      .where([:name, :language_code] => needed)
       .index_by { |t| "#{t.name}:#{t.language_code}" }
   end
 
