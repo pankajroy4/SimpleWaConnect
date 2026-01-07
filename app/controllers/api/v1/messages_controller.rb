@@ -4,10 +4,22 @@ class Api::V1::MessagesController < Api::V1::BaseController
 
     data = result.data || {}
     if result.success?
-      render json: { success: true, queued_message_ids: data[:queued_message_ids] || [], errors: data[:errors] || [] }, status: result.http_status
+      render json: { success: true, queued_messages: data[:queued_messages] || [], errors: data[:errors] || [] }, status: result.http_status
     else
       render json: { success: false, error: result.error, details: result.details }, status: result.http_status
     end
+  end
+
+  def show
+    id = params[:id]
+    message = current_user.messages.find(id)
+
+    render json: {
+             "message_id" => message.id,
+             "status" => message.status,
+             "message_group" => message.message_group,
+             "recipient" => message.customer.phone_number,
+           }.to_json, status: 200
   end
 
   private

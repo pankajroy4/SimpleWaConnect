@@ -13,6 +13,7 @@ class Whatsapp::MessageDeliverJob < ApplicationJob
 
     if message
       message.update!(status: "failed", error_text: error.message)
+      MessageStatusCallbackNotifier::MessageStatusNotifierJob.perform_later(message.id) if message.bulk_created?
       MESSAGE_JOB_LOGGER.error("FINAL FAILURE message_id=#{message.id} - #{error.message}")
     else
       MESSAGE_JOB_LOGGER.error("FINAL FAILURE - message not available in job arguments")
@@ -22,26 +23,36 @@ class Whatsapp::MessageDeliverJob < ApplicationJob
   def perform(message, message_id)
     MESSAGE_JOB_LOGGER.info("START message_id=#{message_id}")
 
-    result = Whatsapp::MessageDeliveryService.call(message)
+    message_response = Whatsapp::MessageDeliveryService.call(message)
 
-    wa_id = result.response&.first&.parsed_response&.dig("messages", 0, "id")
-    response_json = result.response.map(&:parsed_response)
-
-    if result.success?
+    if message_response.success?
       message.update!(
-        status: "sent",
-        remote_id_meta: wa_id,
-        response_json: response_json,
+        status: message_response.message_status || "accepted",
+        remote_id_meta: message_response.wa_message_id,
+        response_json: message_response.success_response,
       )
       MESSAGE_JOB_LOGGER.info("SENT message_id=#{message.id}")
     else
-      message.update!(
-        status: "processing",
-        error_text: result.error_text,
-        response_json: response_json,
-      )
-      MESSAGE_JOB_LOGGER.error("ATTEMPT FAILED message_id=#{message.id} - #{result.error_text}")
-      raise MessageDeliveryError, result.error_text
+      if message_response.internal_server_error?
+        message.update!(
+          status: "processing",
+          error_text: message_response.error_message,
+          response_json: message_response.raw_response,
+        )
+
+        MESSAGE_JOB_LOGGER.error("ATTEMPT FAILED message_id=#{message.id} - #{message_response.error_message}")
+        raise MessageDeliveryError, message_response.error_message
+      else
+        message.update!(
+          status: "failed",
+          error_text: message_response.error_message,
+          response_json: message_response.raw_response,
+        )
+
+        MessageStatusCallbackNotifier::MessageStatusNotifierJob.perform_later(message.id) if message.bulk_created?
+
+        MESSAGE_JOB_LOGGER.error("ATTEMPT FAILED message_id=#{message.id} - #{message_response.error_message}")
+      end
     end
   end
 end

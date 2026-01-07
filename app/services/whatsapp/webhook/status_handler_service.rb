@@ -21,6 +21,8 @@ class Whatsapp::Webhook::StatusHandlerService
 
         message.update(status: "failed", error_text: error_text.presence || "Unknown WA error")
       end
+
+      MessageStatusCallbackNotifier::MessageStatusNotifierJob.perform_later(message.id) if message.bulk_created?
     end
   end
 end

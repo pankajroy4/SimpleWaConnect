@@ -1,7 +1,5 @@
 module Whatsapp
   class MessageDeliveryService
-    Result = Struct.new(:success?, :remote_id, :response, :error_text)
-
     def self.call(message)
       new(message).call
     end
@@ -45,24 +43,20 @@ module Whatsapp
     end
 
     def send_to_recipients(base_payload, phone_number_id)
-      remote_ids = []
-      responses = []
-      errors = []
+      error = nil
+      response = nil
+      to = @message.customer.phone_number
 
-      @message.customers.pluck(:phone_number).each do |to|
-        payload = base_payload.merge(to: to)
-        begin
-          response = Whatsapp::WhatsappClient.send(payload, @account, phone_number_id)
-          remote_ids << response[:remote_id]
-          responses << response
-        rescue => e
-          errors << "#{e.class}: #{e.message}"
-        end
-        sleep(0.2)
+      payload = base_payload.merge(to: to)
+      begin
+        response = Whatsapp::WhatsappClient.send(payload, @account, phone_number_id)
+        return Whatsapp::MessageResponse.new(response)
+      rescue => e
+        return Whatsapp::MessageResponse.new({error: {
+          message: e.message,
+          code: 500
+        }})
       end
-
-      return Result.new(true, remote_ids.first, responses, nil) if errors.empty?
-      Result.new(false, remote_ids.first, responses, errors.join(" | "))
     end
   end
 end

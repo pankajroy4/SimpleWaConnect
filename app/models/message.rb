@@ -1,13 +1,11 @@
 class Message < ApplicationRecord
   belongs_to :account
   belongs_to :template, optional: true
-
-  has_many :customer_messages, dependent: :destroy
-  has_many :customers, through: :customer_messages
+  belongs_to :customer
 
   belongs_to :user, optional: true
 
-  enum :status, { queued: "queued", processing: "processing", sent: "sent", delivered: "delivered", read: "read", failed: "failed" }
+  enum :status, { queued: "queued", processing: "processing", accepted: "accepted", delivered: "delivered", read: "read", failed: "failed" }
 
   enum :direction, { incoming: "incoming", outgoing: "outgoing" }
 
@@ -17,7 +15,7 @@ class Message < ApplicationRecord
   validates :template, presence: true, if: :template_message?
 
   after_create_commit :broadcast_creation, unless: :bulk_created?
-  after_update_commit :broadcast_update
+  after_update_commit :broadcast_update, unless: :bulk_created?
 
   def incoming?
     direction == "incoming"
@@ -26,7 +24,7 @@ class Message < ApplicationRecord
   private
 
   def broadcast_creation
-    customers.each do |customer|
+    # customers.each do |customer|
       # append message to chat
       broadcast_append_to "customers_list", target: "messages-list-#{customer.id}", partial: "messages/message", locals: { message: self }
 
@@ -35,12 +33,12 @@ class Message < ApplicationRecord
 
       # update last_seen
       broadcast_update_to "customers_list", target: "last_active_customer_#{customer.id}", partial: "customers/last_active", locals: { customer: customer }
-    end
+    # end
   end
 
   def broadcast_update
-    customers.each do |customer|
+    # customers.each do |customer|
       broadcast_replace_to "customers_list", target: "status_message_#{self.id}", partial: "messages/status_tick", locals: { message: self }
-    end
+    # end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_20_195317) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,16 +21,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["platform"], name: "index_accounts_on_platform"
-  end
-
-  create_table "customer_messages", force: :cascade do |t|
-    t.bigint "customer_id", null: false
-    t.bigint "message_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customer_id", "message_id"], name: "index_customer_messages_on_customer_id_and_message_id", unique: true
-    t.index ["customer_id"], name: "index_customer_messages_on_customer_id"
-    t.index ["message_id"], name: "index_customer_messages_on_message_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -50,6 +40,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.bigint "account_id", null: false
     t.bigint "template_id"
     t.bigint "user_id"
+    t.bigint "customer_id"
+    t.string "message_group"
     t.boolean "bulk_created", default: true
     t.jsonb "payload", default: {}
     t.jsonb "incoming_webhook_payload"
@@ -62,6 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_messages_on_account_id"
+    t.index ["customer_id"], name: "index_messages_on_customer_id"
     t.index ["status"], name: "index_messages_on_status"
     t.index ["template_id"], name: "index_messages_on_template_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
@@ -90,6 +83,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.string "encrypted_password", default: "", null: false
     t.bigint "account_id"
     t.string "role"
+    t.string "callback_url"
+    t.string "callback_secret"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -130,10 +125,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_25_064206) do
     t.index ["phone_number_id_meta"], name: "index_whatsapp_phone_numbers_on_phone_number_id_meta", unique: true
   end
 
-  add_foreign_key "customer_messages", "customers"
-  add_foreign_key "customer_messages", "messages"
   add_foreign_key "customers", "accounts"
   add_foreign_key "messages", "accounts"
+  add_foreign_key "messages", "customers"
   add_foreign_key "messages", "templates"
   add_foreign_key "messages", "users"
   add_foreign_key "templates", "accounts"

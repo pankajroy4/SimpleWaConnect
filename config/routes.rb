@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       end
 
       resources :messages, only: [:create, :show]
+      get "template_payloads/resolve", to: "template_payloads#resolve"
     end
   end
 

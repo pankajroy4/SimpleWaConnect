@@ -9,6 +9,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[8.0]
       t.string :encrypted_password, null: false, default: ""
       t.references :account, foreign_key: true
       t.string :role
+      t.string :callback_url 
+      t.string :callback_secret
 
       ## Recoverable
       t.string :reset_password_token
