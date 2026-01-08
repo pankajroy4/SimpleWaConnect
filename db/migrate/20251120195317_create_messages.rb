@@ -4,6 +4,8 @@ class CreateMessages < ActiveRecord::Migration[8.0]
       t.references :account, null: false, foreign_key: true
       t.references :template, foreign_key: true
       t.references :user, foreign_key: true
+      t.references :customer, foreign_key: true
+      t.string :message_group
       t.boolean :bulk_created, default: true
       t.jsonb :payload, default: {}      # Internal structure - Sending message
       t.jsonb :incoming_webhook_payload  # Received from meta as webhook payload

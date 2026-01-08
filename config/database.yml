@@ -10,7 +10,7 @@ default: &default
 
 development:
   <<: *default
-  database: simple_wa_connect_development
+  database: simple_wa_connect_development_own
   username: postgres
   password: postgres
   host: 'localhost'
@@ -19,7 +19,7 @@ development:
 test:
   <<: *default
   encoding: utf8
-  database: simple_wa_connect_test
+  database: simple_wa_connect_test_own
 
 
 production:

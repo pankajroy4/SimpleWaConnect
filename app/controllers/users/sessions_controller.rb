@@ -21,7 +21,8 @@ class Users::SessionsController < Devise::SessionsController
   # protected
   def after_sign_in_path_for(resource)
     if resource.superadmin?
-      rails_admin_path
+      # rails_admin_path
+      welcomes_path
     else
       welcomes_path
     end

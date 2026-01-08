@@ -58,19 +58,6 @@ class Messages::BatchCreateValidator
   def preload_templates
     needed = @messages.map do |msg|
       h = msg.to_h.symbolize_keys
-      next nil unless h[:template_name]
-      [h[:template_name], h[:language_code] || "en_US"]
-    end.compact.uniq
-
-    # One DB query
-    @templates = @account.templates
-      .where(needed.map { |name, lang| { name: name, language_code: lang } }.reduce(:or))
-      .index_by { |t| "#{t.name}:#{t.language_code}" }
-  end
-
-  def preload_templates
-    needed = @messages.map do |msg|
-      h = msg.to_h.symbolize_keys
       next nil if h[:message_type] == "non_template_message"
       next nil unless h[:template_name]
       [h[:template_name], h[:language_code] || "en_US"]
@@ -83,7 +70,7 @@ class Messages::BatchCreateValidator
 
     # One DB query
     @templates = @account.templates
-      .where(needed.map { |name, lang| { name: name, language_code: lang } }.reduce(:or))
+      .where([:name, :language_code] => needed)
       .index_by { |t| "#{t.name}:#{t.language_code}" }
   end
 

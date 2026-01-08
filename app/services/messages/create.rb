@@ -7,7 +7,7 @@ module Messages
       @account = current_user.account
       @params = params
       @bulk_created = bulk_created
-      @queued_ids = []
+      @queued_messages = []
       @errors = []
     end
 
@@ -35,11 +35,11 @@ module Messages
         process_single_message(validated_params, index)
       end
 
-      if @queued_ids.empty?
+      if @queued_messages.empty?
         return failure("no_valid_messages", @errors, 422)
       end
 
-      success({ queued_message_ids: @queued_ids, errors: @errors })
+      success({ queued_messages: @queued_messages, errors: @errors })
     end
 
     private
@@ -55,35 +55,42 @@ module Messages
         return
       end
 
+      messages = []
+
       ActiveRecord::Base.transaction do
-        message = Message.create!(
-          account: @account,
-          user: @user,
-          bulk_created: @bulk_created,
-          message_type: Message.message_types[validated_params[:message_type]],
-          template: validated_params[:template],
-          payload: validated_params.except(:template, :recipients, :sender_phone_number),
-          direction: "outgoing",
-          status: "queued",
-        )
+        message_group = "gr#{SecureRandom.hex(8)}"
+        validated_params[:recipients].each do |recipient|
+          customer = Messages::FindOrCreateCustomer.call(
+            account: @account,
+            recipient: recipient,
+            bulk_created: @bulk_created,
+          )
 
-        Messages::FindOrCreateCustomer.call(
-          account: @account,
-          message: message,
-          recipients: validated_params[:recipients],
-          bulk_created: @bulk_created,
-        )
-
-        Whatsapp::MessageDeliverJob.perform_later(message, message.id)
-
-        @queued_ids << message.id
-
-        if recipient_errors.any?
-          @errors << {
-            input_index: input_index,
-            invalid_recipients: recipient_errors,
-          }
+          messages << Message.create!(
+            account: @account,
+            user: @user,
+            customer: customer,
+            bulk_created: @bulk_created,
+            message_type: Message.message_types[validated_params[:message_type]],
+            template: validated_params[:template],
+            payload: validated_params.except(:template, :recipients, :sender_phone_number),
+            direction: "outgoing",
+            status: "queued",
+            message_group: message_group,
+          )
         end
+      end
+
+      messages.each do |message|
+        Whatsapp::MessageDeliverJob.perform_later(message, message.id)
+        @queued_messages << { message_id: message.id, recipient: message.customer.phone_number, status: "enqueued" }
+      end
+
+      if recipient_errors.any?
+        @errors << {
+          input_index: input_index,
+          invalid_recipients: recipient_errors,
+        }
       end
     rescue => e
       @errors << { input_index: input_index, error: e.message }

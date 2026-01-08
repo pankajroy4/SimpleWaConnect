@@ -73,7 +73,7 @@ module Messages
         return Result.new(false, nil, err)
       end
 
-      message_id = result.data[:queued_message_ids].last
+      message_id = result.dig(:data, :queued_messages, 0, :message_id)
       message = Message.find(message_id)
 
       Result.new(true, message, nil)
