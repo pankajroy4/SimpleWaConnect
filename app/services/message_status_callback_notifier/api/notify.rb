@@ -1,4 +1,4 @@
-module MessageStatusCallbackNotifier  
+module MessageStatusCallbackNotifier
   module Api
     module Notify
       extend self
@@ -16,13 +16,17 @@ module MessageStatusCallbackNotifier
       end
 
       def request_body(message)
-        {
-          "message_id" => message.id,
-          "status" => message.status,
-          "message_group" => message.message_group,
-          "recipient" => message.customer.phone_number,
-          "meta_response_json" => message.failed? ? message.response_json : nil,
-        }.to_json
+        success_response =
+          {
+            "message_id" => message.id,
+            "status" => message.status,
+            "message_group" => message.message_group,
+            "recipient" => message.customer.phone_number,
+          }
+
+        return success_response.to_json unless message.failed?
+
+        return success_response.merge({ error: { message: message.error_text, data: message.response_json } }).as_json
       end
 
       def request_headers(message)

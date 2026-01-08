@@ -123,7 +123,6 @@ class Messages::CreateValidator
   end
 
   def load_template
-    binding.pry
     @template = if @params[:language_code]
         @account.templates.find_by(
           name: @params[:template_name],
