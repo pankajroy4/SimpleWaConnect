@@ -11,27 +11,25 @@
       </h1>
     </div>
 
-    <div class="bg-green-600/20 border border-green-500 text-green-300 p-3 rounded-lg text-sm text-center mb-6">
+    <div class="bg-green-600/20 border border-green-500 text-green-300 p-3 rounded-lg text-sm text-center mb-2">
       You are successfully signed in.
     </div>
 
     <div class="space-y-3">
-      <div class="bg-gray-700 p-3 rounded-lg text-sm">
-        <p class="text-center">
-          <span class="font-medium text-gray-300">Email:</span>
-          <%= current_user&.email %>
-        </p>
+      <div class="bg-blue-600/20 border border-blue-500 text-blue-300 p-3 rounded-lg text-sm text-center mb-7">
+        <span class="font-medium">Email:</span>
+        <%= current_user&.email %>
       </div>
 
-      <%# if current_user.superadmin? %>
-        <%#= link_to "Admin Panel", rails_admin_path, class: "w-full text-sm inline-flex items-center justify-center bg-green-600 hover:bg-green-500 text-white font-medium rounded py-2 transition" %>
-      <%# end %>
+      <% if current_user.superadmin? %>
+        <%= link_to "Admin Panel", rails_admin_path, class: "w-full text-sm inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded py-2 transition" %>
+      <% end %>
 
       <%= link_to "WhatsApp Dashboard", customers_path, class: "w-full text-sm inline-flex items-center justify-center bg-green-600 hover:bg-green-500 text-white font-medium rounded py-2 transition" %>
 
       <%#= button_to "Log out", destroy_user_session_path, method: :delete, class: "w-full text-sm inline-flex items-center justify-center bg-red-600 hover:bg-red-500 text-white font-medium rounded py-2 transition cursor-pointer", form: { data: { turbo: true } } %>
 
-      <%= link_to "Update Account", edit_user_registration_path, class: "w-full text-sm inline-flex items-center justify-center bg-[#4285F4] hover:bg-[#357ae8] text-white font-medium rounded py-2 transition" %>
+      <%= link_to "Update Account", edit_user_registration_path, class: "w-full text-sm inline-flex items-center justify-center bg-blue-600 hover:bg-blue-500 text-white font-medium rounded py-2 transition" %>
 
       <%= link_to "Log out", destroy_user_session_path, class: "w-full text-sm inline-flex items-center justify-center bg-red-600 hover:bg-red-500 text-white font-medium rounded py-2 transition", data: { 'turbo-method': :delete } %>
     </div>

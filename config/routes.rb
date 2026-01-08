@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   root "welcomes#index" # Show Home button in rails_admin panel
 
   authenticate :user, lambda { |user| user.superadmin? } do
-    # mount RailsAdmin::Engine => "/admin", as: "rails_admin"
+    mount RailsAdmin::Engine => "/admin", as: "rails_admin"
     mount Sidekiq::Web => "/sidekiq", as: "sidekiq"
   end
   # WEB USER AUTH (HTML UI)
