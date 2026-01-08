@@ -37,7 +37,7 @@ class Messages::BatchCreateValidator
       end
     end
 
-    Result.new(true, @errors, @validated)
+    Result.new(true, @errors, @validated.compact)
   end
 
   private
@@ -47,7 +47,7 @@ class Messages::BatchCreateValidator
   end
 
   def lookup_sender(params)
-    phone = params[:sender_phone_number]
+    phone = (params[:sender_phone_number])&.to_s
 
     if phone.present?
       return @senders[phone]    # return nil if invalid

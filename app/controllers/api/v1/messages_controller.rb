@@ -1,6 +1,7 @@
 class Api::V1::MessagesController < Api::V1::BaseController
   def create
-    result = Messages::Create.call(current_user: current_user, params: message_params, bulk_created: true)
+    message_group = params[:message_group]
+    result = Messages::Create.call(current_user: current_user, params: message_params, bulk_created: true, message_group:)
 
     data = result.data || {}
     if result.success?
@@ -14,15 +15,23 @@ class Api::V1::MessagesController < Api::V1::BaseController
     id = params[:id]
     message = current_user.messages.find(id)
 
-    render json: {
-             "message_id" => message.id,
-             "status" => message.status,
-             "message_group" => message.message_group,
-             "recipient" => message.customer.phone_number,
-           }.to_json, status: 200
+    render json: get_message_response(message), status: 200
   end
 
   private
+
+  def get_message_response(message)
+    success_response =
+      {
+        "message_id" => message.id,
+        "status" => message.status,
+        "message_group" => message.message_group,
+        "recipient" => message.customer.phone_number,
+      }
+
+    return success_response.to_json unless message.failed?
+    success_response.merge({ error: { message: message.error_text, data: message.response_json } }).as_json
+  end
 
   def message_params
     params.require(:messages).map do |message|

@@ -24,7 +24,7 @@ module Whatsapp
           @account, @customer = update_customer_window(msg)
           unless @account && @customer
             Rails.logger.error("Account or customer not found for phone_number_id=#{@phone_number_id}")
-            next
+            raise ActiveRecord::Rollback # Here we should not use "next"
           end
 
           dispatch_by_type(msg)
@@ -87,6 +87,7 @@ module Whatsapp
 
       def handle_media(msg, type)
         data = msg[type.to_s]
+        return unless data && data["id"]
         media_id = data["id"]
 
         payload = {
@@ -114,18 +115,27 @@ module Whatsapp
       end
 
       def handle_interactive(msg)
-        title = msg.dig("interactive", "button_reply", "title") ||
-                msg.dig("interactive", "list_reply", "title")
+        interactive = msg["interactive"]
+        return unless interactive
 
-        handle_text(
-          "text" => { "body" => title },
-          "from" => msg["from"],
-          "id" => msg["id"],
+        payload = {
+          "media_type" => "interactive",
+          "interactive_type" => interactive["type"],
+          "title" => interactive.dig("button_reply", "title") ||
+                     interactive.dig("list_reply", "title"),
+          "id" => interactive.dig("button_reply", "id") ||
+                  interactive.dig("list_reply", "id"),
+        }
+
+        create_incoming_message!(
+          payload: payload,
+          remote_id: msg["id"],
         )
       end
 
       def handle_location(msg)
-        loc = msg["location"] || return
+        loc = msg["location"]
+        return unless loc
 
         payload = {
           "media_type" => "location",
@@ -141,7 +151,8 @@ module Whatsapp
       end
 
       def handle_contact(msg)
-        contact = msg.dig("contacts", 0) || return
+        contact = msg.dig("contacts", 0)
+        return unless contact
 
         payload = {
           "media_type" => "contact",

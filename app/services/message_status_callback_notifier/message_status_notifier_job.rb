@@ -1,14 +1,18 @@
 class MessageStatusCallbackNotifier::MessageStatusNotifierJob < ApplicationJob
-  queue_as :default
+  class MessageNotifierError < StandardError; end
 
-  # TODO: need to retry for 3 ties if fails then do not retry anymore.
+  queue_as :default
+  retry_on MessageNotifierError, attempts: 2
+
+  discard_on MessageNotifierError
+
   def perform(message_id)
     message = Message.find(message_id)
     return if message.user.callback_url.blank?
 
     response = MessageStatusCallbackNotifier::Client.notify(message)
     unless response.success?
-      retry_job wait: 5.minutes, queue: :default
+      raise MessageNotifierError, "Error in notifier"
     end
   end
 end
