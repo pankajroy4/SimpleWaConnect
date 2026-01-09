@@ -1,7 +1,7 @@
 <!-- app/views/messages/_message.html.erb -->
 <% outgoing = message.direction == "outgoing" %>
 <div id="<%= dom_id(message, :message) %>" data-message-id="msg-<%= message.id %>" class="w-full mb-3 flex <%= outgoing ? 'justify-end' : 'justify-start' %>">
-  <div class="relative max-w-[75%] break-words shadow-md px-2.5 py-2 text-[14px] leading-snug <%= outgoing ? 'bg-[#005C4B] text-white ml-auto rounded-xl ' : 'bg-[#202C33] text-white mr-auto rounded-xl ' %> before:content-[''] before:absolute before:w-3 before:h-3 before:rotate-45 <%= outgoing ? 'before:bg-[#005C4B] before:-right-1 before:top-3' : 'before:bg-[#202C33] before:-left-1 before:top-3'%>">
+  <div class="relative max-w-[75%] break-words shadow-md px-2.5 py-1 text-[14px] leading-snug <%= outgoing ? 'bg-[#005C4B] text-white ml-auto rounded-xl ' : 'bg-[#202C33] text-white mr-auto rounded-xl ' %> before:content-[''] before:absolute before:w-3 before:h-3 before:rotate-45 <%= outgoing ? 'before:bg-[#005C4B] before:-right-1 before:top-3' : 'before:bg-[#202C33] before:-left-1 before:top-3'%>">
 
     <% media_type = message.payload["media_type"] %>
     <% if media_type.present? %>
@@ -57,35 +57,38 @@
       <% end %>
     <% end %>
 
-    <% if message.payload["body_text"].present? %>
-      <div class="break-words break-all overflow-hidden">
-        <%= message.payload["body_text"] %>
-      </div>
+    <% if message.template_message? && !message.payload["body_text"].present?%>
+      Template Message
+    <%else%>
+      <% if message.payload["body_text"].present? %>
+        <div class="break-words break-all overflow-hidden">
+          <%= message.payload["body_text"] %>
+        </div>
+      <% end %>
+
+      <% if message.payload["caption"] %>
+        <div class="mt-1 opacity-90">
+          <%= message.payload["caption"] %>
+        </div>
+      <% end %>
     <% end %>
 
-    <% if message.payload["caption"] %>
-      <div class="mt-1 opacity-90">
-        <%= message.payload["caption"] %>
-      </div>
-    <% end %>
+    <div class="flex justify-end items-center gap-1 text-[10px] opacity-80">
 
-    <div class="flex justify-end items-center gap-1 text-[10px] opacity-80 mt-1">
+      <% if outgoing && message.user.present? %>
+        <span class="text-white/70">
+          <%= message.user.name %>
+        </span>
+        <span class="text-white/40">•</span>
+      <% end %>
 
-  <% if outgoing && message.user.present? %>
-    <span class="text-white/70">
-      <%= message.user.name %>
-    </span>
-    <span class="text-white/40">•</span>
-  <% end %>
+      <span>
+        <%= message.created_at.strftime("%I:%M %p") %>
+      </span>
 
-  <span>
-    <%= message.created_at.strftime("%I:%M %p") %>
-  </span>
-
-  <% if outgoing %>
-    <%= render partial: "messages/status_tick", locals: { message: message } %>
-  <% end %>
-</div>
-
+      <% if outgoing %>
+        <%= render partial: "messages/status_tick", locals: { message: message } %>
+      <% end %>
+    </div>
   </div>
 </div>
