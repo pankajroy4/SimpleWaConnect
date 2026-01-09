@@ -1,4 +1,5 @@
 <!-- app/views/messages/_message.html.erb -->
+<%if false %>
 <% outgoing = message.direction == "outgoing" %>
 <div id="<%= dom_id(message, :message) %>" data-message-id="msg-<%= message.id %>" class="w-full mb-3 flex <%= outgoing ? 'justify-end' : 'justify-start' %>">
   <div class="relative max-w-[75%] break-words shadow-md px-2.5 py-1 text-[14px] leading-snug <%= outgoing ? 'bg-[#005C4B] text-white ml-auto rounded-xl ' : 'bg-[#202C33] text-white mr-auto rounded-xl ' %> before:content-[''] before:absolute before:w-3 before:h-3 before:rotate-45 <%= outgoing ? 'before:bg-[#005C4B] before:-right-1 before:top-3' : 'before:bg-[#202C33] before:-left-1 before:top-3'%>">
@@ -92,3 +93,106 @@
     </div>
   </div>
 </div>
+<%end%>
+
+
+
+
+<!--  ==================================================================================== --->
+
+
+<%if true %>
+<% outgoing = message.direction == "outgoing" %>
+<div id="<%= dom_id(message, :message) %>" class="w-full mb-2 flex <%= outgoing ? 'justify-end' : 'justify-start' %> ">
+  <div class="relative inline-flex flex-col max-w-[85%] sm:max-w-[70%] min-w-[96px] px-2 py-1.5 shadow-sm <%= outgoing ? 'bg-[#005C4B] text-white rounded-l-lg rounded-br-lg' : 'bg-[#202C33] text-white rounded-r-lg rounded-bl-lg' %>">
+    <% if outgoing %>
+      <div class="absolute top-0 -right-2 w-3 h-[13px] text-[#005C4B]">
+        <svg viewBox="0 0 8 13" preserveAspectRatio="none" class="w-full h-full fill-current">
+          <path d="M0 0v13l8-13H0z"></path>
+        </svg>
+      </div>
+    <% else %>
+      <div class="absolute top-0 -left-2 w-3 h-[13px] text-[#202C33]">
+        <svg viewBox="0 0 8 13" preserveAspectRatio="none" class="w-full h-full fill-current">
+          <path d="M8 0v13L0 0h8z"></path>
+        </svg>
+      </div>
+    <% end %>
+
+    <!-- Media -->
+    <% media_type = message.payload["media_type"] %>
+    <% if media_type.present? %>
+      <div class="mb-1">
+        <% media_src = message.payload["media_id"].present? ? medium_path(message.id) : message.payload["media_url"] %>
+
+        <% case media_type %>
+        <% when "image" %>
+          <%= image_tag media_src,
+                class: "rounded-md max-w-full h-auto block mx-auto" if media_src.present? %>
+
+        <% when "video" %>
+          <video controls class="rounded-md max-w-full bg-black">
+            <source src="<%= media_src %>" type="video/mp4">
+          </video>
+
+        <% when "audio" %>
+          <div class="flex items-center gap-2 bg-black/5 rounded p-2 min-w-[200px]">
+            <audio controls class="h-8 w-full">
+              <source src="<%= media_src %>" type="audio/mpeg">
+            </audio>
+          </div>
+
+        <% when "document" %>
+          <div class="flex items-center gap-3 p-2 bg-black/5 rounded border border-black/10">
+            <i class="bx bx-file text-2xl text-gray-500"></i>
+            <span class="text-xs truncate flex-1">
+              <%= message.payload["filename"].presence || "Document" %>
+            </span>
+            <a href="<%= media_src %>" download>
+              <i class="bx bx-download text-lg"></i>
+            </a>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Message text -->
+    <% if message.template_message? && !message.payload["body_text"].present?%>
+      <div class="text-[14px] leading-[19px] break-words">
+        Template Message
+      </div>
+    <%else%>
+      <% if message.payload["body_text"].present? %>
+        <div class="text-[14px] leading-[19px] break-words">
+          <%= message.payload["body_text"] %>
+        </div>
+      <% end %>
+
+      <% if message.payload["caption"] %>
+        <div class="mt-1 text-[14px] leading-[19px] break-words">
+          <%= message.payload["caption"] %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <!-- Footer -->
+
+    <div class="flex justify-end items-center gap-1 text-[10px] opacity-80">
+      <% if outgoing && message.user.present? %>
+        <span class="text-white/70">
+          <%= message.user.name %>
+        </span>
+        <span class="text-white/40">•</span>
+      <% end %>
+
+      <span>
+        <%= message.created_at.strftime("%I:%M %p") %>
+      </span>
+
+      <% if outgoing %>
+        <%= render partial: "messages/status_tick", locals: { message: message } %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<% end %>
