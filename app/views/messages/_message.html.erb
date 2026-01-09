@@ -69,12 +69,23 @@
       </div>
     <% end %>
 
-    <div  class="flex justify-end items-center gap-1 text-[10px] opacity-80 mt-1">
-      <span><%= message.created_at.strftime("%I:%M %p") %></span>
+    <div class="flex justify-end items-center gap-1 text-[10px] opacity-80 mt-1">
 
-      <% if outgoing %>
-        <%= render partial: "messages/status_tick", locals: { message: message } %>
-      <% end %>
-    </div>
+  <% if outgoing && message.user.present? %>
+    <span class="text-white/70">
+      <%= message.user.name %>
+    </span>
+    <span class="text-white/40">•</span>
+  <% end %>
+
+  <span>
+    <%= message.created_at.strftime("%I:%M %p") %>
+  </span>
+
+  <% if outgoing %>
+    <%= render partial: "messages/status_tick", locals: { message: message } %>
+  <% end %>
+</div>
+
   </div>
 </div>
