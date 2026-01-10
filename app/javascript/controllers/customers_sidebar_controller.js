@@ -100,10 +100,12 @@ export default class extends Controller {
       this.unreadCounts.set(customerId, value)
       badge.textContent = value
       badge.classList.remove("hidden")
+      badge.classList.add("inline-flex")
     } else {
       this.unreadCounts.delete(customerId)
       badge.textContent = "0"
       badge.classList.add("hidden")
+      badge.classList.remove("inline-flex")
     }
   }
 }
