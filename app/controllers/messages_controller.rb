@@ -4,11 +4,10 @@ class MessagesController < ApplicationController
   before_action :set_customer
 
   def index
-    before_id = params[:before_id]
-    scope = @customer.messages.includes(:user)
-    scope = scope.where("messages.id < ?", before_id) if before_id.present?
-    @messages = scope.order(id: :desc).limit(30).reverse
-    render partial: "messages/messages", locals: { messages: @messages }
+    scope = @customer.messages.includes(:user).order(created_at: :desc, id: :desc)
+    @pagy, @messages = pagy_keyset(scope, items: 30)
+    @messages = @messages.reverse
+    render partial: "messages/infinite_batch", locals: { messages: @messages, pagy: @pagy }
   end
 
   def create

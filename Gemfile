@@ -82,3 +82,4 @@ gem "sprockets-rails"
 gem 'rails_admin', '~> 3.3'
 gem "sassc-rails"
 gem 'sassc'
+gem "pagy", "~> 9.3"

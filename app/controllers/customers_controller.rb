@@ -7,9 +7,11 @@ class CustomersController < ApplicationController
   end
 
   def show
-    @customers = @account.customers&.order(updated_at: :desc) || []
-    @customer = @account.customers&.find(params[:id])
-    @messages = @customer&.messages&.includes(:user)&.order(created_at: :desc)&.limit(30)&.reverse || []
+    @customers = @account.customers.order(updated_at: :desc)
+    @customer = @account.customers.find(params[:id])
+    scope = @customer.messages.includes(:user).order(created_at: :desc, id: :desc)
+    @pagy, @messages = pagy_keyset(scope, items: 30)
+    @messages = @messages.reverse
   end
 
   private
