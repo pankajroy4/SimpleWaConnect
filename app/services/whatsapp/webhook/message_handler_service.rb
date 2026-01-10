@@ -104,14 +104,17 @@ module Whatsapp
       end
 
       def resolve_filename(type, data)
-        case type
-        when :image, :video
-          "whatsapp_media_#{data["id"]}"
-        when :audio
-          "audio_#{data["id"]}"
-        when :document
-          data["filename"] || "file_#{data["id"]}"
-        end
+        mime = data["mime_type"]
+        ext = extension_from_mime(mime)
+
+        base = case type
+          when :image then "whatsapp_image"
+          when :video then "whatsapp_video"
+          when :audio then "whatsapp_audio"
+          when :document then data["filename"] || "document"
+          end
+
+        ext ? "#{base}_#{data["id"]}.#{ext}" : "#{base}_#{data["id"]}"
       end
 
       def handle_interactive(msg)
@@ -163,6 +166,21 @@ module Whatsapp
           payload: payload,
           remote_id: msg["id"],
         )
+      end
+
+      def extension_from_mime(mime)
+        return nil if mime.blank?
+        mime = mime.split(";").first
+
+        {
+          "image/jpeg" => "jpg",
+          "image/png" => "png",
+          "video/mp4" => "mp4",
+          "audio/ogg" => "ogg",
+          "audio/mpeg" => "mp3",
+          "audio/mp4" => "m4a",
+          "application/pdf" => "pdf",
+        }[mime]
       end
     end
   end

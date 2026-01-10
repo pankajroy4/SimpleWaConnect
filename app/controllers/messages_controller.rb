@@ -5,14 +5,14 @@ class MessagesController < ApplicationController
 
   def index
     before_id = params[:before_id]
-    scope = @customer.messages
+    scope = @customer.messages.includes(:user)
     scope = scope.where("messages.id < ?", before_id) if before_id.present?
-    @messages = scope.order(id: :desc).limit(50).reverse
+    @messages = scope.order(id: :desc).limit(30).reverse
     render partial: "messages/messages", locals: { messages: @messages }
   end
 
   def create
-    if params[:body_text].blank? && attachments_empty?(params[:attachment])
+    if params[:body_text]&.strip().blank? && attachments_empty?(params[:attachment])
       flash.now[:alert] = "Message or attachment required"
       return render turbo_stream: turbo_stream.update("flash", partial: "layouts/flash")
     end
@@ -20,7 +20,7 @@ class MessagesController < ApplicationController
     result = Messages::WebCreate.call(
       customer: @customer,
       user: current_user,
-      body_text: params[:body_text],
+      body_text: params[:body_text]&.strip(),
       attachment: params[:attachment],
     )
 

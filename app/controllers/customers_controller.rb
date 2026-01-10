@@ -9,7 +9,7 @@ class CustomersController < ApplicationController
   def show
     @customers = @account.customers&.order(updated_at: :desc) || []
     @customer = @account.customers&.find(params[:id])
-    @messages = @customer&.messages.order(created_at: :asc).last(50) || []
+    @messages = @customer&.messages&.includes(:user)&.order(created_at: :desc)&.limit(30)&.reverse || []
   end
 
   private
