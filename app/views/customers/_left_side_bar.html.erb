@@ -48,7 +48,7 @@
   </div>
 
   <!-- Chat list -->
-  <div id="chats-list" class="flex-1 overflow-auto" >
+  <div id="chats-list" class="flex-1 overflow-auto message-list-scroll" >
     <% @customers.each do |customer| %>
       <%= render partial: 'customers/list_item', locals: { customer: customer } %>
     <% end %>

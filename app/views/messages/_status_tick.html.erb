@@ -9,4 +9,4 @@
 
 <% icon_class = status_icon_classes[message.status&.to_sym] || "bx bx-help-circle text-gray-500" %>
 
-<i id="<%= dom_id(message, :status) %>" class="text-lg font-semibold <%= icon_class %>" title="<%= message.status %>"></i>
+<i id="<%= dom_id(message, :status) %>" class="text-xs font-semibold <%= icon_class %>" title="<%= message.status %>"></i>
