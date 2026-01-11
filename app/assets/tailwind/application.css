@@ -59,3 +59,15 @@ body.whatsapp-dark {
 /* .hide-scrollbar::-webkit-scrollbar {
   display: none;               
 } */
+
+#attachment-preview {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+#attachment-preview::-webkit-scrollbar {
+  height: 6px;
+}
+#attachment-preview::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
