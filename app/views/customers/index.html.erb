@@ -1,3 +1,4 @@
+<%if false %>
 <div class="w-full h-screen flex items-center justify-center">
   <div class="chat-window flex border border-[#2A3942] w-full max-w-[1220px] h-[calc(100vh-30px)] mb-6 rounded-[10px] overflow-hidden shadow-[0_12px_30px_rgba(2,6,23,0.4)]">
 
@@ -14,3 +15,36 @@
 
   </div>
 </div>
+<%end%>
+
+
+
+
+<!-- ==================================== -->
+
+<%if true %>
+<div data-controller="mobile-sidebar" class="w-full h-screen flex items-center justify-center">
+  <div class="chat-window relative flex border border-[rgb(var(--border))] w-full max-w-[1220px] h-[calc(100vh-30px)] mb-6 rounded-[10px] overflow-hidden shadow-[0_12px_30px_rgba(2,6,23,0.18)] dark:shadow-[0_12px_30px_rgba(2,6,23,0.45)]">
+
+  <div data-controller="notification-sound" data-notification-sound-src-value="/assets/notify.wav" data-notification-sound-volume-value="0.6"></div>
+    <!-- Mobile backdrop -->
+    <div data-mobile-sidebar-target="backdrop" data-action="click->mobile-sidebar#close" class="hidden md:hidden absolute inset-0 bg-black/50 z-40"
+    ></div>
+
+    <!-- Sidebar wrapper (controls off-canvas behavior) -->
+    <div data-mobile-sidebar-target="sidebar" class="absolute md:static inset-y-0 left-0 z-50 md:z-auto w-80 h-full flex-shrink-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-out">
+      <%= render partial: "customers/left_side_bar" %>
+    </div>
+    <%= turbo_stream_from "customers_list" %>
+
+    <!-- Chat area -->
+    <turbo-frame id="chat_frame" class="flex-1 flex flex-col bg-transparent">
+      <div class="w-full h-full flex items-center justify-center">
+        <div class="text-center text-[rgb(var(--muted))]">
+          <%= render 'customers/empty_state' %>
+        </div>
+      </div>
+    </turbo-frame>
+  </div>
+</div>
+<%end%>
