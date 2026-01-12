@@ -3,9 +3,13 @@ export default class extends Controller {
   static targets = ["badge", "item", "search"]
 
   connect() {
-    this.openCustomerId = window.OPEN_CUSTOMER_ID || null
+    this.openCustomerId = this.getOpenCustomerId()
     this.unreadCounts = new Map()
     this.messageUpdateTimers = {}
+
+    if (this.openCustomerId) {
+      this.setActiveCustomer(Number(this.openCustomerId))
+    }
 
     // Observe only DOM insertions inside sidebar
     this.observer = new MutationObserver(mutations => {
@@ -17,6 +21,12 @@ export default class extends Controller {
 
   disconnect() {
     if (this.observer) this.observer.disconnect()
+  }
+
+  getOpenCustomerId() {
+    const frame = document.getElementById("chat_frame")
+    const id = frame?.dataset?.openCustomerId
+    return id ? Number(id) : null
   }
 
   filter(event) {

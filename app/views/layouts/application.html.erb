@@ -16,8 +16,6 @@
     <%= javascript_importmap_tags %>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <meta name="csrf-token" content="<%= form_authenticity_token %>" />
-
-    <script>window.CURRENT_USER_ID = <%= current_user&.id || 'null' %>;</script>
   </head>
   <body class="min-h-screen bg-[rgb(var(--app-bg))] text-[rgb(var(--text))]">
     <div class="fixed top-4 inset-x-0 flex justify-center z-50 pointer-events-none">

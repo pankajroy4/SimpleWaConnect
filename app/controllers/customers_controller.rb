@@ -12,6 +12,12 @@ class CustomersController < ApplicationController
     scope = @customer.messages.includes(:user).order(created_at: :desc, id: :desc)
     @pagy, @messages = pagy_keyset(scope, items: 30)
     @messages = @messages.reverse
+
+    if turbo_frame_request?
+      render :show
+    else
+      render :index
+    end
   end
 
   private

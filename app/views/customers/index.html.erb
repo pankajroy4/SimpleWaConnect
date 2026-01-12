@@ -38,12 +38,16 @@
     <%= turbo_stream_from "customers_list" %>
 
     <!-- Chat area -->
-    <turbo-frame id="chat_frame" class="flex-1 flex flex-col bg-transparent">
-      <div class="w-full h-full flex items-center justify-center">
-        <div class="text-center text-[rgb(var(--muted))]">
-          <%= render 'customers/empty_state' %>
+    <turbo-frame id="chat_frame" class="flex-1 flex flex-col bg-transparent" data-open-customer-id="<%= @customer&.id %>">
+      <% if @customer.present? %>
+        <%= render partial: "customers/chat", locals: { customer: @customer, messages: @messages, pagy: @pagy } %>
+      <% else %>
+        <div class="w-full h-full flex items-center justify-center">
+          <div class="text-center text-[rgb(var(--muted))]">
+            <%= render "customers/empty_state" %>
+          </div>
         </div>
-      </div>
+      <% end %>
     </turbo-frame>
   </div>
 </div>
