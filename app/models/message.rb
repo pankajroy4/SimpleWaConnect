@@ -24,21 +24,17 @@ class Message < ApplicationRecord
   private
 
   def broadcast_creation
-    # customers.each do |customer|
-      # append message to chat
-      broadcast_append_to "customers_list", target: "messages-list-#{customer.id}", partial: "messages/message", locals: { message: self }
+    # append message to chat
+    broadcast_append_to "customers_list", target: "messages-list-#{customer.id}", partial: "messages/message", locals: { message: self }
 
-      # update sidebar item
-      broadcast_update_to "customers_list", target: "last_message_customer_#{customer.id}", partial: "customers/last_message", locals: { customer: customer }
+    # update sidebar item
+    broadcast_update_to "customers_list", target: "last_message_customer_#{customer.id}", partial: "customers/last_message", locals: { customer: customer, last_message: self }
 
-      # update last_seen
-      broadcast_update_to "customers_list", target: "last_active_customer_#{customer.id}", partial: "customers/last_active", locals: { customer: customer }
-    # end
+    # update last_seen
+    broadcast_update_to "customers_list", target: "last_active_customer_#{customer.id}", partial: "customers/last_active", locals: { customer: customer }
   end
 
   def broadcast_update
-    # customers.each do |customer|
-      broadcast_replace_to "customers_list", target: "status_message_#{self.id}", partial: "messages/status_tick", locals: { message: self }
-    # end
+    broadcast_replace_to "customers_list", target: "status_message_#{self.id}", partial: "messages/status_tick", locals: { message: self }
   end
 end

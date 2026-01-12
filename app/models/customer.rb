@@ -13,15 +13,6 @@ class Customer < ApplicationRecord
     messages.order(created_at: :desc).limit(1).pluck(:created_at).first
   end
 
-  def unread_count
-    # incoming messages not yet read
-    Message.joins(:customer_messages).where(customer_messages: { customer_id: id }).where(direction: "incoming").where.not(status: "read").count
-  end
-
-  def incoming?
-    direction == "incoming"
-  end
-
   private
 
   def broadcast_creation

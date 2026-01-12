@@ -122,10 +122,13 @@
   </div>
 
   <!-- Chat list -->
-  <div id="chats-list" class="flex-1 overflow-y-auto message-list-scroll">
-    <% @customers.each do |customer| %>
-      <%= render partial: 'customers/list_item', locals: { customer: customer } %>
-    <% end %>
+  <div id="chats-list" data-controller="chats-infinite-scroll" data-chats-infinite-scroll-next-page-value="<%= @pagy_customers&.next %>" class="flex-1 overflow-y-auto message-list-scroll">
+    <div id="chats-container" data-chats-infinite-scroll-target="container">
+      <%= render partial: "customers/list_items", locals: { customers: @customers } %>
+    </div>
+    <div id="chats-infinite-loader" class="text-center text-[rgb(var(--muted))] my-4 hidden flex items-center justify-center">
+      <i class='bx bx-loader-alt bx-spin text-2xl'></i>
+    </div>
   </div>
 
   <div class="p-3 border-t border-[rgb(var(--border))] text-xs text-center text-[rgb(var(--muted))]">
