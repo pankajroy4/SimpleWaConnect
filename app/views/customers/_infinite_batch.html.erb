@@ -1,0 +1,6 @@
+<!-- app/views/customers/_infinite_batch.html.erb -->
+<div data-next-page="<%= pagy.next %>">
+  <% customers.each do |customer| %>
+    <%= render partial: "customers/list_item", locals: { customer: customer } %>
+  <% end %>
+</div>

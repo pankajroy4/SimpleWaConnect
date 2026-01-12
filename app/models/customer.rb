@@ -25,6 +25,6 @@ class Customer < ApplicationRecord
   private
 
   def broadcast_creation
-    broadcast_prepend_to "customers_list", target: "chats-list", partial: "customers/list_item", locals: { customer: self }
+    broadcast_prepend_to "customers_list", target: "chats-list", partial: "customers/list_item", locals: { customer: self, initial_unread: 1 }
   end
 end

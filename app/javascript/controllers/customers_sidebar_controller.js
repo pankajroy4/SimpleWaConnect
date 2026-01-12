@@ -6,6 +6,7 @@ export default class extends Controller {
     this.openCustomerId = this.getOpenCustomerId()
     this.unreadCounts = new Map()
     this.messageUpdateTimers = {}
+    this.seenLastMessage = new Set()
 
     if (this.openCustomerId) {
       this.setActiveCustomer(Number(this.openCustomerId))
@@ -104,11 +105,26 @@ export default class extends Controller {
     const match = node.id.match(/^last_message_customer_(\d+)$/)
     if (!match) return
     const customerId = Number(match[1])
+    const direction = el.dataset.direction
+    const initialUnread = Number(el.dataset.initialUnread || "0")
+
+    // First time insertion: pagination OR new customer broadcast
+    if (!this.seenLastMessage.has(customerId)) {
+      this.seenLastMessage.add(customerId)
+      // NEW CUSTOMER + INCOMING MESSAGE => show badge immediately
+      if (direction === "incoming" && initialUnread > 0 && this.openCustomerId !== customerId) {
+        this.setUnread(customerId, initialUnread)
+        this.playNotificationSound()
+      }
+      return
+    }
+
     // skip if debounce active
     if (this.messageUpdateTimers[customerId]) return
 
     this.messageUpdateTimers[customerId] = setTimeout(() => {
       delete this.messageUpdateTimers[customerId]
+      if (direction !== "incoming") return
 
       if (this.openCustomerId === customerId) {
         this.setUnread(customerId, 0)

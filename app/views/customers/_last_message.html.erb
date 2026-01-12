@@ -1,8 +1,9 @@
-<div id="<%= dom_id(customer, :last_message) %>" class="w-full block text-xs text-[rgb(var(--muted))] flex items-center justify-between gap-2 min-w-0">
+<% last = (@last_messages || {})[customer.id] %>
+<div id="<%= dom_id(customer, :last_message) %>" class="w-full block text-xs text-[rgb(var(--muted))] flex items-center justify-between gap-2 min-w-0" data-direction="<%= last&.direction %>" data-initial-unread="<%= local_assigns[:initial_unread].to_i %>">
   <span class="truncate overflow-hidden whitespace-nowrap min-w-0 flex-1 text-[12px]">
-    <%= customer.messages.last&.payload&.dig("body_text") %>
+    <%= last&.payload&.dig("body_text") %>
   </span>
   <span class="text-[10px] whitespace-nowrap flex-shrink-0 ml-2">
-    <%= customer.messages.last&.created_at&.strftime("%I:%M %p") %>
+    <%= last&.created_at&.strftime("%I:%M %p") %>
   </span>
 </div>

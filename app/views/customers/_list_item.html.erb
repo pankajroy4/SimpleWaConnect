@@ -8,7 +8,7 @@
     </div>
     <div class="flex-1 min-w-0">
       <div class="text-sm font-semibold text-[rgb(var(--text))] truncate"><%= customer.display_name %></div>
-      <%= render partial: "customers/last_message", locals: { customer: customer } %>
+      <%= render partial: "customers/last_message", locals: { customer: customer, initial_unread: (local_assigns[:initial_unread] || 0) } %>
     </div>
     <div class="flex-shrink-0 ml-2">
       <span data-customers-sidebar-target="badge" data-customer-id="<%= customer.id %>" class="unread-badge hidden items-center justify-center font-bold bg-[rgb(var(--brand))] text-white text-[12px] rounded-full px-2 py-0.5">0</span>

@@ -122,11 +122,20 @@
   </div>
 
   <!-- Chat list -->
-  <div id="chats-list" class="flex-1 overflow-y-auto message-list-scroll">
-    <% @customers.each do |customer| %>
-      <%= render partial: 'customers/list_item', locals: { customer: customer } %>
-    <% end %>
+  <div id="chats-list" data-controller="customers-infinite-scroll" data-customers-infinite-scroll-next-page-value="<%= @pagy&.next %>" class="flex-1 overflow-y-auto message-list-scroll">
+    <div data-customers-infinite-scroll-target="container">
+      <% @customers.each do |customer| %>
+        <%= render partial: "customers/list_item", locals: { customer: customer } %>
+      <% end %>
+    </div>
+
+    <!-- loader -->
+    <div data-customers-infinite-scroll-target="loader"
+        class="hidden py-4 text-center text-[rgb(var(--muted))]">
+      <i class='bx bx-loader-alt bx-spin text-2xl'></i>
+    </div>
   </div>
+
 
   <div class="p-3 border-t border-[rgb(var(--border))] text-xs text-center text-[rgb(var(--muted))]">
     © <%= Time.current.year %> • Simple WA Connect
