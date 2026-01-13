@@ -1,1 +1,2 @@
- <%= time_ago_in_words(customer&.last_window_opened_at) rescue false || time_ago_in_words(customer&.updated_at) %>
+<!-- app/views/customers/_last_active.html.erb -->
+<%= time_ago_in_words(customer&.last_window_opened_at) rescue false || time_ago_in_words(customer&.updated_at) %>

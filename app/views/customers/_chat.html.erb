@@ -1,3 +1,4 @@
+<!-- app/views/customers/_chat.html.erb -->
 <div class="flex flex-col h-full w-full">
   <section class="flex flex-col flex-1 h-full">
     <!-- HEADER -->
@@ -47,7 +48,9 @@
     </header>
 
     <!-- CHAT BODY -->
-    <main data-controller="auto-scroll scrollbar infinite-scroll" data-auto-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-next-page-value="<%= @pagy&.next %>" class="flex-1 overflow-y-auto p-6 bg-[rgb(var(--chat-bg))] chat-wallpaper" id="messages-list-<%= @customer.id %>">
+    <main data-controller="auto-scroll scrollbar infinite-scroll chat-message-sound" 
+    data-chat-message-sound-customer-id-value="<%= @customer.id %>"
+    data-auto-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-next-page-value="<%= @pagy&.next %>" class="flex-1 overflow-y-auto p-6 bg-[rgb(var(--chat-bg))] chat-wallpaper" id="messages-list-<%= @customer.id %>">
       <div id="infinite-loading-<%= @customer.id %>" class="text-center text-[rgb(var(--muted))] my-4 hidden flex items-center justify-center">
         <i class='bx bx-loader-alt bx-spin text-2xl'></i>
       </div>

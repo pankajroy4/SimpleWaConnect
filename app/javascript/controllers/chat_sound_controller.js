@@ -1,16 +1,17 @@
-// app/javascript/controllers/notification_sound_controller.js
 import { Controller } from "@hotwired/stimulus"
+
 export default class extends Controller {
   static values = {
-    src: String,
+    sendSrc: String,
+    receiveSrc: String,
     volume: { type: Number, default: 0.6 }
   }
 
   connect() {
-    this.audio = new Audio(this.srcValue)
-    this.audio.volume = this.volumeValue
-    this.audio.preload = "auto"
-    // Browsers require user interaction before audio can play.
+    this.sendAudio = this.makeAudio(this.sendSrcValue)
+    this.receiveAudio = this.makeAudio(this.receiveSrcValue)
+
+    // browsers require user interaction before audio
     this.unlocked = false
     this._unlockHandler = this.unlock.bind(this)
 
@@ -25,23 +26,37 @@ export default class extends Controller {
     window.removeEventListener("touchstart", this._unlockHandler)
   }
 
+  makeAudio(src) {
+    if (!src) return null
+    const a = new Audio(src)
+    a.volume = this.volumeValue
+    a.preload = "auto"
+    return a
+  }
+
   unlock() {
-    this.audio.muted = true
-    this.audio.play().then(() => {
-      this.audio.pause()
-      this.audio.currentTime = 0
-      this.audio.muted = false
+    const a = this.sendAudio || this.receiveAudio
+    if (!a) return
+
+    a.muted = true
+    a.play().then(() => {
+      a.pause()
+      a.currentTime = 0
+      a.muted = false
       this.unlocked = true
     }).catch(() => {
       this.unlocked = false
     })
   }
 
-  play() {
-    if (!this.unlocked) return
+  play(audio) {
+    if (!this.unlocked || !audio) return
     try {
-      this.audio.currentTime = 0
-      this.audio.play().catch(() => { })
-    } catch (_) { }
+      audio.currentTime = 0
+      audio.play().catch(() => {})
+    } catch (_) {}
   }
+
+  send() { this.play(this.sendAudio) }
+  receive() { this.play(this.receiveAudio) }
 }

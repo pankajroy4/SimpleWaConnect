@@ -1,28 +1,4 @@
-<%if false %>
-<div class="w-full h-screen flex items-center justify-center">
-  <div class="chat-window flex border border-[#2A3942] w-full max-w-[1220px] h-[calc(100vh-30px)] mb-6 rounded-[10px] overflow-hidden shadow-[0_12px_30px_rgba(2,6,23,0.4)]">
-
-    <%= render partial: "customers/left_side_bar" %>
-    <%= turbo_stream_from "customers_list" %>
-
-    <turbo-frame id="chat_frame" class="flex-1 flex flex-col bg-transparent">
-      <div class="w-full h-full flex items-center justify-center">
-        <div class="text-center text-gray-300">
-         <%= render 'customers/empty_state' %>
-        </div>
-      </div>
-    </turbo-frame>
-
-  </div>
-</div>
-<%end%>
-
-
-
-
-<!-- ==================================== -->
-
-<%if true %>
+<!-- app/views/customers/index.html.erb -->
 <div data-controller="mobile-sidebar" class="w-full h-screen flex items-center justify-center">
   <div class="chat-window relative flex border border-[rgb(var(--border))] w-full max-w-[1220px] h-[calc(100vh-30px)] mb-6 rounded-[10px] overflow-hidden shadow-[0_12px_30px_rgba(2,6,23,0.18)] dark:shadow-[0_12px_30px_rgba(2,6,23,0.45)]">
 
@@ -36,6 +12,10 @@
       <%= render partial: "customers/left_side_bar" %>
     </div>
     <%= turbo_stream_from "customers_list" %>
+
+    <div data-controller="chat-sound" data-chat-sound-send-src-value="/assets/whatssapp_web.mp3" data-chat-sound-receive-src-value="/assets/whatssapp_web.mp3" data-chat-sound-delivered-src-value="/assets/whatssapp_web.mp3" data-chat-sound-volume-value="0.5">
+    </div>
+
 
     <!-- Chat area -->
     <turbo-frame id="chat_frame" class="flex-1 flex flex-col bg-transparent" data-open-customer-id="<%= @customer&.id %>">
@@ -51,4 +31,3 @@
     </turbo-frame>
   </div>
 </div>
-<%end%>

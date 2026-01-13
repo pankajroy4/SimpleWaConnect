@@ -1,3 +1,4 @@
+<!-- app/views/customers/_last_message_and_badge.html.erb -->
 <div class="flex-1 min-w-0 w-full">
   <!-- Row 1: Name (left) + Badge (right) -->
   <div class="flex items-center justify-between gap-2 min-w-0">
@@ -5,7 +6,7 @@
       <%= customer.display_name %>
     </div>
     <% unread = customer.unread_count.to_i %>
-    <span data-customers-sidebar-target="badge" data-customer-id="<%= customer.id %>" class="unread-badge <%= unread > 0 ? 'inline-flex' : 'hidden' %> items-center justify-center font-bold bg-[rgb(var(--brand))] text-white text-[12px] rounded-full px-1.5 py-0.5 mr-3"> <%= unread %> </span>
+    <span  data-customer-id="<%= customer.id %>" class="unread-badge <%= unread > 0 ? 'inline-flex' : 'hidden' %> items-center justify-center font-bold bg-[rgb(var(--brand))] text-white text-[12px] rounded-full px-1.5 py-0.5 mr-3"> <%= unread %> </span>
   </div>
 
   <!-- Row 2: Last message + time (existing partial) -->

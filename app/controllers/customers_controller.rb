@@ -26,7 +26,7 @@ class CustomersController < ApplicationController
     scope_messages = @customer.messages.includes(:user).order(created_at: :desc, id: :desc)
     @pagy, @messages = pagy_keyset(scope_messages, items: 30)
     @messages = @messages.reverse
-    @customer.update_column(:unread_count, 0)
+    @customer.update_column(:unread_count, 0) if @customer.unread_count > 0
 
     if turbo_frame_request?
       render :show
@@ -38,7 +38,8 @@ class CustomersController < ApplicationController
 
   def mark_read
     customer = @account.customers.find(params[:id])
-    customer.update_column(:unread_count, 0)
+    return head :ok unless customer.unread_count > 0
+    customer.update_column(:unread_count, 0) if customer.unread_count > 0
 
     # optional: broadcast sidebar badge update to all sessions
     last_message = customer.messages.order(id: :desc).first

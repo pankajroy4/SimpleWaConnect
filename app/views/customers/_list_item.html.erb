@@ -1,3 +1,5 @@
+<!-- app/views/customers/_list_item.html.erb -->
+<div id="customer_row_<%= customer.id %>">
 <%= link_to customer_path(customer), data: { turbo_frame: "chat_frame", action: "click->customers-sidebar#openCustomer", customer_id: customer.id, customers_sidebar_target: "item", customer_name: customer.display_name.to_s.downcase, customer_number: customer.phone_number.to_s}, class: "customers-sidebar-link relative block p-3 rounded-xl transition hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))]", id: "customer-link-#{customer.id}" do %>
   <span class="customers-active-indicator pointer-events-none absolute inset-y-0 left-0 w-0.5 rounded bg-[rgb(var(--brand))] opacity-0"></span>
   <div class="chat-item relative z-0 flex items-center gap-3 min-w-0" >
@@ -13,3 +15,4 @@
     </div>
   </div>
 <% end %>
+</div>

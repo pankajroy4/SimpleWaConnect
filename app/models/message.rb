@@ -34,17 +34,25 @@ class Message < ApplicationRecord
   end
 
   def broadcast_creation
-    # append message to chat
+    # Ensure this chat becomes latest in ordering (for DB ordering)
+    customer.touch(:updated_at)
+
+    # Move/insert chat row at top (works even if not loaded)
+    broadcast_sidebar_move_to_top
+
+    # append message to chat area
     broadcast_append_to "customers_list", target: "messages-list-#{customer.id}", partial: "messages/message", locals: { message: self }
 
-    # update sidebar item
-    broadcast_update_to "customers_list", target: "last_message_customer_#{customer.id}", partial: "customers/last_message", locals: { customer: customer, last_message: self }
-
-    # update last_seen
+    # update last_seen in chat window header
     broadcast_update_to "customers_list", target: "last_active_customer_#{customer.id}", partial: "customers/last_active", locals: { customer: customer }
   end
 
+  # Update message statuses like sent, delivered or read.
   def broadcast_update
     broadcast_replace_to "customers_list", target: "status_message_#{self.id}", partial: "messages/status_tick", locals: { message: self }
+  end
+
+  def broadcast_sidebar_move_to_top
+    broadcast_render_to "customers_list", partial: "customers/move_to_top", locals: { customer: customer, last_message: self }
   end
 end
