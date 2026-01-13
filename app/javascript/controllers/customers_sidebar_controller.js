@@ -137,9 +137,10 @@ export default class extends Controller {
 
       if (this.openCustomerId === customerId) {
         this.setUnread(customerId, 0)
+        this.markReadInDb(customerId)
       } else {
-        const prev = this.unreadCounts.get(customerId) || 0
-        this.setUnread(customerId, prev + 1)
+        const count = Number(node.querySelector('[data-unread-count]')?.dataset.unreadCount || 0)
+        this.setUnread(customerId, count)
         this.playNotificationSound()
       }
     }, 80)
@@ -162,6 +163,20 @@ export default class extends Controller {
       badge.classList.remove("inline-flex")
     }
   }
+
+  markReadInDb(customerId) {
+    const token = document.querySelector("meta[name=csrf-token]")?.content
+    if (!token) return
+
+    fetch(`/chats/${customerId}/mark_read`, {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": token,
+        "Accept": "application/json"
+      }
+    }).catch(() => {})
+  }
+
 
   playNotificationSound() {
     const el = document.querySelector("[data-controller~='notification-sound']")

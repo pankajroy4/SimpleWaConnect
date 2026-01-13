@@ -14,7 +14,7 @@ class Message < ApplicationRecord
   validates :direction, presence: true
   validates :template, presence: true, if: :template_message?
 
-  after_create_commit :broadcast_creation, unless: :bulk_created?
+  after_create_commit :handle_after_create, unless: :bulk_created?
   after_update_commit :broadcast_update, unless: :bulk_created?
 
   def incoming?
@@ -22,6 +22,16 @@ class Message < ApplicationRecord
   end
 
   private
+
+  def handle_after_create
+    increment_unread_count_if_needed
+    broadcast_creation
+  end
+
+  def increment_unread_count_if_needed
+    return unless incoming?
+    customer.increment!(:unread_count)
+  end
 
   def broadcast_creation
     # append message to chat

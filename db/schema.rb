@@ -30,10 +30,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_20_195317) do
     t.boolean "bulk_created", default: true
     t.datetime "last_window_opened_at"
     t.jsonb "profile"
+    t.integer "unread_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "phone_number"], name: "index_customers_on_account_id_and_phone_number", unique: true
     t.index ["account_id"], name: "index_customers_on_account_id"
+    t.index ["unread_count"], name: "index_customers_on_unread_count"
   end
 
   create_table "messages", force: :cascade do |t|

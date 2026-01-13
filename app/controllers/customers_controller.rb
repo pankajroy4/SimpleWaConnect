@@ -26,6 +26,7 @@ class CustomersController < ApplicationController
     scope_messages = @customer.messages.includes(:user).order(created_at: :desc, id: :desc)
     @pagy, @messages = pagy_keyset(scope_messages, items: 30)
     @messages = @messages.reverse
+    @customer.update_column(:unread_count, 0)
 
     if turbo_frame_request?
       render :show
@@ -33,6 +34,22 @@ class CustomersController < ApplicationController
       preload_last_messages!(@customers)
       render :index
     end
+  end
+
+  def mark_read
+    customer = @account.customers.find(params[:id])
+    customer.update_column(:unread_count, 0)
+
+    # optional: broadcast sidebar badge update to all sessions
+    last_message = customer.messages.order(id: :desc).first
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "customers_list",
+      target: "last_message_and_badge_#{customer.id}",
+      partial: "customers/last_message_and_badge",
+      locals: { customer: customer, last_message: last_message },
+    )
+
+    head :ok
   end
 
   private

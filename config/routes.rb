@@ -34,6 +34,9 @@ Rails.application.routes.draw do
   # web messaging routes
   # messaging routes (add/merge)
   resources :customers, path: "chats", only: [:index, :show] do
+    member do
+      post :mark_read
+    end
     collection do
       get :infinite_scroll
     end
