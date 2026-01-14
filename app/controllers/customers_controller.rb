@@ -1,3 +1,4 @@
+# ============== app/controllers/customers_controller.rb ==============
 class CustomersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_account

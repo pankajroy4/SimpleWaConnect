@@ -1,3 +1,4 @@
+# ============== app/models/message.rb ==============
 class Message < ApplicationRecord
   belongs_to :account
   belongs_to :template, optional: true
@@ -41,7 +42,7 @@ class Message < ApplicationRecord
     broadcast_sidebar_move_to_top
 
     # append message to chat area
-    broadcast_append_to "customers_list", target: "messages-list-#{customer.id}", partial: "messages/message", locals: { message: self }
+    broadcast_append_to "customers_list", target: "messages-container-#{customer.id}", partial: "messages/message", locals: { message: self }
 
     # update last_seen in chat window header
     broadcast_update_to "customers_list", target: "last_active_customer_#{customer.id}", partial: "customers/last_active", locals: { customer: customer }

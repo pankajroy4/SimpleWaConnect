@@ -2,7 +2,7 @@
 <div data-controller="mobile-sidebar" class="w-full h-screen flex items-center justify-center">
   <div class="chat-window relative flex border border-[rgb(var(--border))] w-full max-w-[1220px] h-[calc(100vh-30px)] mb-6 rounded-[10px] overflow-hidden shadow-[0_12px_30px_rgba(2,6,23,0.18)] dark:shadow-[0_12px_30px_rgba(2,6,23,0.45)]">
 
-  <div data-controller="notification-sound" data-notification-sound-src-value="/assets/notify.wav" data-notification-sound-volume-value="0.6"></div>
+  <div data-controller="notification-sound" data-notification-sound-src-value="/assets/wa_notify.mp3" data-notification-sound-volume-value="0.6"></div>
     <!-- Mobile backdrop -->
     <div data-mobile-sidebar-target="backdrop" data-action="click->mobile-sidebar#close" class="hidden md:hidden absolute inset-0 bg-black/50 z-40"
     ></div>
@@ -13,7 +13,7 @@
     </div>
     <%= turbo_stream_from "customers_list" %>
 
-    <div data-controller="chat-sound" data-chat-sound-send-src-value="/assets/whatssapp_web.mp3" data-chat-sound-receive-src-value="/assets/whatssapp_web.mp3" data-chat-sound-delivered-src-value="/assets/whatssapp_web.mp3" data-chat-sound-volume-value="0.5">
+    <div data-controller="chat-sound" data-chat-sound-send-src-value="/assets/wa_message_send.mp3" data-chat-sound-receive-src-value="/assets/wa_message_receive.mp3" data-chat-sound-delivered-src-value="/assets/wa_message_send.mp3" data-chat-sound-volume-value="0.5">
     </div>
 
 

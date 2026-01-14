@@ -21,18 +21,20 @@ export default class extends Controller {
 
     // We only care about new messages appended in currently open chat list
     if (action !== "append") return
-    if (target !== `messages-list-${this.customerIdValue}`) return
+    if (target !== `messages-container-${this.customerIdValue}`) return
 
     const originalRender = event.detail.render
     event.detail.render = (streamElement) => {
       originalRender(streamElement)
 
       // find last message in open chat list
-      const list = document.getElementById(`messages-list-${this.customerIdValue}`)
+      const list = document.getElementById(`messages-container-${this.customerIdValue}`)
       const lastMsg = list?.querySelector("[data-message-id]:last-child")
+        console.log("lastMsg", lastMsg)
       if (!lastMsg) return
 
       const direction = lastMsg.dataset.direction
+      console.log("direction", direction)
 
       // get sound controller
       const soundEl = document.querySelector("[data-controller~='chat-sound']")

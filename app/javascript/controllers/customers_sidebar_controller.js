@@ -91,7 +91,12 @@ onBeforeStreamRender(event) {
   const action = stream.getAttribute("action")
   if (!target || !action) return
 
-  // detect updates like last_message_and_badge_<id>
+  this.openCustomerId = this.getOpenCustomerId() || window.OPEN_CUSTOMER_ID || this.openCustomerId
+  const messageContainerMatch = target.match(/^messages-container-(\d+)$/)
+  const messageCustomerId = messageContainerMatch ? Number(messageContainerMatch[1]) : null
+
+  const isMessageInsert =
+    messageCustomerId && (action === "append" || action === "prepend")
   const badgeMatch = target.match(/^last_message_and_badge_(\d+)$/)
   const updatedCustomerId = badgeMatch ? Number(badgeMatch[1]) : null
 
@@ -117,13 +122,14 @@ onBeforeStreamRender(event) {
 
   // ✅ IMPORTANT: this must include OTHER chats too, not only open chat
   const affectsSidebar =
-    badgeMatch || // any last_message_and_badge_<id>
+    badgeMatch ||                         // sidebar badge update
+    isPrependToChats ||                   // reorder/prepend chat rows
     target === "chats-container" ||
     target === "chats-list" ||
-    action === "prepend" ||
     action === "remove" ||
     action === "replace" ||
-    action === "update"
+    action === "update" ||
+    isMessageInsert                       // ✅ NEW: message inserted into messages-container-<id>
 
   if (!affectsSidebar) return
 
@@ -140,6 +146,7 @@ onBeforeStreamRender(event) {
       const openChatWasUpdated =
         updatedCustomerId === this.openCustomerId ||
         insertedCustomerId === this.openCustomerId ||
+        messageCustomerId === this.openCustomerId || 
         target === `last_message_and_badge_${this.openCustomerId}` ||
         target === `customer_row_${this.openCustomerId}`
 
@@ -151,6 +158,8 @@ onBeforeStreamRender(event) {
     // -------------------
     // 2) Notification sound logic
     // -------------------
+    const shouldSoundForMessageInsert =
+      isMessageInsert && messageCustomerId !== this.openCustomerId
     const shouldSoundForPrepend =
       insertedCustomerId && insertedCustomerId !== this.openCustomerId
 
@@ -161,7 +170,7 @@ onBeforeStreamRender(event) {
     const soundCooldown = 250
 
     if (
-      (shouldSoundForPrepend || shouldSoundForOtherChatUpdate) &&
+      (shouldSoundForMessageInsert || shouldSoundForPrepend || shouldSoundForOtherChatUpdate) &&
       now - this.lastSoundAt > soundCooldown
     ) {
       this.lastSoundAt = now
@@ -169,6 +178,7 @@ onBeforeStreamRender(event) {
     }
   }
 }
+
 
 
   playNotificationSound() {
