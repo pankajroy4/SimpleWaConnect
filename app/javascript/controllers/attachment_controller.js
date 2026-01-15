@@ -17,6 +17,16 @@ export default class extends Controller {
     }
   }
 
+  clear() {
+    this.files = [];
+    if (this.input) this.input.value = "";
+    if (this.previewBox) {
+      this.previewBox.innerHTML = "";
+    }
+    const limitBox = document.getElementById("attachment-limit-msg");
+    if (limitBox) limitBox.classList.add("hidden");
+  }
+
   preview(event) {
     const input = event.target;
     const previewBox = this.previewBox || document.getElementById("attachment-preview");
