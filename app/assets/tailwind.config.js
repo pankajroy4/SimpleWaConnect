@@ -1,8 +1,5 @@
-// app/assets/tailwind.config.js
-import colors from "tailwindcss/colors";
-
 export default {
-  // darkMode: "class",
+  darkMode: "class",
   content: [
     "./app/views/**/*.{erb,html}",
     "./app/helpers/**/*.rb",
@@ -15,15 +12,7 @@ export default {
     { pattern: /to-\[#.*?\]/ },
   ],
   theme: {
-    extend: {
-      // Do NOT redefine "colors" here → Tailwind keeps ALL defaults
-    },
+    extend: {},
   },
   plugins: [],
 };
-
-
-module.exports = {
-  important: true,
-  // ...
-}
