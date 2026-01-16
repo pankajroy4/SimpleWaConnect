@@ -1,3 +1,4 @@
+// app/javascript/controllers/attachment_controller.js
 import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static values = { maxFiles: { type: Number, default: 20 } };
@@ -14,6 +15,16 @@ export default class extends Controller {
         this.removeFileByButton(btn);
       });
     }
+  }
+
+  clear() {
+    this.files = [];
+    if (this.input) this.input.value = "";
+    if (this.previewBox) {
+      this.previewBox.innerHTML = "";
+    }
+    const limitBox = document.getElementById("attachment-limit-msg");
+    if (limitBox) limitBox.classList.add("hidden");
   }
 
   preview(event) {

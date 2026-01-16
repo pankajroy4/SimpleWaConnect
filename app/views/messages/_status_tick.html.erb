@@ -1,12 +1,13 @@
+<!-- app/views/messages/_status_tick.html.erb -->
+
 <% status_icon_classes = {
-  queued: "bx bx-time text-gray-400",
-  processing: "bx bx-loader-alt animate-spin text-gray-400",
-  accepted: "bx bx-check text-gray-300",
-  delivered: "bx bx-check-double text-gray-300",
-  read: "bx bx-check-double text-blue-400",
+  queued: "bx bx-time text-[rgb(var(--muted))]",
+  processing: "bx bx-loader-alt animate-spin text-[rgb(var(--muted))]",
+  accepted: "bx bx-check text-[rgb(var(--muted))]",
+  delivered: "bx bx-check-double text-[rgb(var(--muted))]",
+  read: "bx bx-check-double text-sky-400",
   failed: "bx bx-error text-red-500"
 } %>
 
-<% icon_class = status_icon_classes[message.status&.to_sym] || "bx bx-help-circle text-gray-500" %>
-
+<% icon_class = status_icon_classes[message.status&.to_sym] || "bx bx-help-circle text-[rgb(var(--soft))]" %>
 <i id="<%= dom_id(message, :status) %>" class="text-xs font-semibold <%= icon_class %>" title="<%= message.status %>"></i>

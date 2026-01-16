@@ -1,5 +1,5 @@
-<%# app/views/messages/create.turbo_stream.erb - returned to origin after posting %>
-<%= turbo_stream.append "messages-list-#{new_message.customer.id}" do %>
+<!-- app/views/messages/create.turbo_stream.erb -->
+<%= turbo_stream.append "messages-container-#{new_message.customer.id}" do %>
   <%= render partial: "messages/message", locals: { message: new_message } %>
 <% end %>
 

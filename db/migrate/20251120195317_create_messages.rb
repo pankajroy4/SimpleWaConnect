@@ -18,5 +18,6 @@ class CreateMessages < ActiveRecord::Migration[8.0]
       t.timestamps
     end
     add_index :messages, :status
+    add_index :messages, [:customer_id, :created_at, :id], name: "idx_messages_customer_created_id"
   end
 end

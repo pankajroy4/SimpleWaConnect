@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="turbo-prefetch" content="false">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
@@ -16,10 +17,8 @@
     <%= javascript_importmap_tags %>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <meta name="csrf-token" content="<%= form_authenticity_token %>" />
-
-    <script>window.CURRENT_USER_ID = <%= current_user&.id || 'null' %>;</script>
   </head>
-  <body class="whatsapp-dark">
+  <body class="min-h-screen bg-[rgb(var(--app-bg))] text-[rgb(var(--text))]">
     <div class="fixed top-4 inset-x-0 flex justify-center z-50 pointer-events-none">
       <div class="flash" id="flash">
         <%= render "layouts/flash" %>
@@ -27,10 +26,10 @@
     </div>
 
     <main>
-       <%= yield %>
-     </main>
-    <footer class="absolute bottom-1 left-0 right-0 text-center text-sm text-gray-400 z-20 bg-transparent pointer-events-none">
-       © <%= Time.current.year %> • Simple WA Connect
-     </footer
+      <%= yield %>
+    </main>
+    <footer class="absolute bottom-1 left-0 right-0 text-center text-sm text-[rgb(var(--muted))] z-20 bg-transparent pointer-events-none">
+      © <%= Time.current.year %> • Simple WA Connect
+    </footer>
   </body>
 </html>
