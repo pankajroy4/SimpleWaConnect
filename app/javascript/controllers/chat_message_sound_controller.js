@@ -30,11 +30,9 @@ export default class extends Controller {
       // find last message in open chat list
       const list = document.getElementById(`messages-container-${this.customerIdValue}`)
       const lastMsg = list?.querySelector("[data-message-id]:last-child")
-        console.log("lastMsg", lastMsg)
       if (!lastMsg) return
 
       const direction = lastMsg.dataset.direction
-      console.log("direction", direction)
 
       // get sound controller
       const soundEl = document.querySelector("[data-controller~='chat-sound']")

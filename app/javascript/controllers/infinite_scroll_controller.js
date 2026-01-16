@@ -78,6 +78,8 @@ export default class extends Controller {
       // mark adjustment phase
       this.isAdjustingScroll = true;
       // Insert only message HTML (wrapper contains messages inside)
+      this.element.dispatchEvent(new CustomEvent("infinite-scroll:adjusting", { bubbles: true }));
+
       this.containerTarget.insertAdjacentHTML("afterbegin", wrapper.innerHTML);
       // Update cursor for next request
       this.nextPageValue = newNextPage;
@@ -90,6 +92,7 @@ export default class extends Controller {
         this.element.scrollTop = newHeight - prevHeight;
         // unlock after browser settles
         requestAnimationFrame(() => {
+          this.element.dispatchEvent(new CustomEvent("infinite-scroll:done", { bubbles: true }));
           this.isAdjustingScroll = false;
         });
       });

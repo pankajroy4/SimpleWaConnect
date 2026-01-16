@@ -50,16 +50,26 @@
     <!-- CHAT BODY -->
     <main data-controller="auto-scroll scrollbar infinite-scroll chat-message-sound" 
     data-chat-message-sound-customer-id-value="<%= @customer.id %>"
-    data-auto-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-next-page-value="<%= @pagy&.next %>" class="flex-1 overflow-y-auto p-6 bg-[rgb(var(--chat-bg))] chat-wallpaper" id="messages-list-<%= @customer.id %>">
+    data-auto-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-next-page-value="<%= @pagy&.next %>" class=" flex-1 overflow-y-auto p-6 bg-[rgb(var(--chat-bg))] chat-wallpaper" id="messages-list-<%= @customer.id %>">
       <div id="infinite-loading-<%= @customer.id %>" class="text-center text-[rgb(var(--muted))] my-4 hidden flex items-center justify-center">
         <i class='bx bx-loader-alt bx-spin text-2xl'></i>
       </div>
-      <div id="messages-container-<%= @customer.id %>" data-infinite-scroll-target="container">
+      <div id="messages-container-<%= @customer.id %>" data-infinite-scroll-target="container" data-auto-scroll-target = "container" class= "min-h-0">
+        
         <% if @messages.blank? %>
           <%= render partial: "messages/empty_conversation" %>
         <% else %>
           <%= render partial: "messages/messages", locals: { messages: @messages } %>
         <% end %>
+
+        <button type="button" data-action="click->auto-scroll#scrollDownClicked" data-auto-scroll-target="scrollDownBtn" class="hidden absolute bottom-40 right-4 z-[9999] w-6 h-10 rounded-full flex items-center justify-center bg-[rgb(var(--panel))] border border-[rgb(var(--border))] shadow-[0_6px_16px_rgba(0,0,0,0.28)] hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))] cursor-pointer active:scale-[0.98] transition" title="Scroll to latest">
+
+          <%#= image_tag "arrow.png", class: "w-6 h-6 opacity-90 select-none pointer-events-none", alt: "Scroll down" %>
+          <span class="w-5 h-5 opacity-90" style=" -webkit-mask: url('<%= asset_path("arrow.png") %>') no-repeat center / contain; mask: url('<%= asset_path("arrow.png") %>') no-repeat center / contain; background-color: rgb(var(--text));">
+          </span>
+          <span data-auto-scroll-target="unreadBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-[4px] rounded-full items-center justify-center bg-[rgb(var(--brand))] text-white text-[11px] font-semibold shadow-[0_2px_8px_rgba(0,0,0,0.35)]">
+          </span>
+        </button>
       </div>
     </main>
 
