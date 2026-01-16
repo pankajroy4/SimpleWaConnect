@@ -9,7 +9,7 @@
       </span>
     </div>
 
-    <div id = "last_message_and_badge_<%=customer.id%>" class="relative w-full">
+   <div id="last_message_and_badge_<%= customer.id %>" class="relative w-full min-w-0">
       <% last_message = local_assigns[:last_message] || (local_assigns[:last_messages] || @last_messages || {})[customer.id] %>
       <%= render partial: "customers/last_message_and_badge",  locals: { customer: customer, last_message: last_message }  %>
     </div>
