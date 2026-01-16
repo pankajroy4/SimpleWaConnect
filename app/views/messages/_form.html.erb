@@ -1,15 +1,15 @@
 <!-- app/views/messages/_form.html.erb -->
 <div id="message_form" class="p-3 sm:p-4 border-t border-[rgb(var(--border))] bg-white/80 backdrop-blur dark:bg-[rgb(var(--panel-2))]" data-controller="attachment">
   <%= form_with url: customer_messages_path(customer), method: :post, multipart: true, data: { controller: "chat-form", action: "turbo:submit-start->chat-form#reset", turbo_stream: true } do |f| %>
-    <div id="attachment-limit-msg" class="hidden text-xs text-red-500 mb-1"></div>
-    <div id="attachment-preview"class="w-full mt-2 flex flex-nowrap gap-2 overflow-x-scroll overflow-y-visible pb-3 pr-10 min-w-0 pt-3 pb-2 px-1"></div>
+    <div id="attachment-limit-msg" class="hidden text-xs text-red-500 mb-1 empty:hidden"></div>
+    <div id="attachment-preview"class="w-full mt-2 mb-2 flex flex-nowrap gap-2 overflow-x-scroll overflow-y-visible pr-10 min-w-0 pt-2 pb-2 px-1 hidden empty:hidden"></div>
     <div class="flex items-center space-x-3">
-      <div class="relative flex-1">
+      <div class="relative flex-1 flex items-center justify-center">
         <%= f.text_area :body_text, placeholder: "Type a message", rows: 1, onkeydown: "if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); this.form.requestSubmit(); }", data: { controller: "autosize" , autosizeMaxHeightValue: 150  }, class: "w-full p-3 pl-12 rounded-2xl resize-none overflow-hidden leading-snug outline-none bg-[rgb(var(--input-bg))] text-[rgb(var(--text))] placeholder:text-[rgb(var(--soft))] border border-[rgb(var(--input-border))] ring-1 ring-[rgb(var(--input-ring))] shadow-[var(--input-shadow-inset)] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/40 dark:shadow-none dark:ring-0"%>
 
         <%= f.file_field :attachment, multiple: true, class: "hidden", id: "attachment", accept: "image/*,.pdf,.png,.jpeg,.doc,.docx,.xlsx", data: { action: "attachment#preview" } %>
 
-        <button type="button" onclick="document.getElementById('attachment').click()" class="absolute left-3 top-1/2 -translate-y-1/2 text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] text-xl cursor-pointer">
+        <button type="button" onclick="document.getElementById('attachment').click()" class="absolute left-3 top-3 text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] text-xl cursor-pointer">
           <i class='bx bx-paperclip '></i>
         </button>
       </div>

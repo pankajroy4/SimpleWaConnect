@@ -1,6 +1,10 @@
 // app/javascript/controllers/chat_form_controller.js
 import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
+  connect() {
+    requestAnimationFrame(() => this.focusInput());
+  }
+
   reset() {
     this.element.reset();
 
@@ -13,5 +17,15 @@ export default class extends Controller {
     );
 
     if (attachmentController) attachmentController.clear();
+    requestAnimationFrame(() => this.focusInput());
+  }
+
+  focusInput() {
+    const textarea = this.element.querySelector("textarea");
+    if (!textarea) return;
+
+    textarea.focus();
+    const len = textarea.value.length;
+    textarea.setSelectionRange(len, len);
   }
 }

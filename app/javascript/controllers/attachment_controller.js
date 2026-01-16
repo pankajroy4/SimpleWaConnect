@@ -23,6 +23,7 @@ export default class extends Controller {
     if (this.previewBox) {
       this.previewBox.innerHTML = "";
     }
+    this.togglePreviewBox();
     const limitBox = document.getElementById("attachment-limit-msg");
     if (limitBox) limitBox.classList.add("hidden");
   }
@@ -43,6 +44,8 @@ export default class extends Controller {
     }
 
     this.files = merged;
+    this.togglePreviewBox();
+
     // Update input.files with the limited list
     this.syncInputFiles(input);
     // Render preview (only on selection)
@@ -87,6 +90,7 @@ export default class extends Controller {
     if (Number.isNaN(index)) return;
     // 1) Remove file from array
     this.files.splice(index, 1);
+    this.togglePreviewBox();
     // 2) Update input.files
     const input = this.input || document.getElementById("attachment");
     if (input) this.syncInputFiles(input);
@@ -101,7 +105,12 @@ export default class extends Controller {
     const previewBox = this.previewBox || document.getElementById("attachment-preview");
     if (!previewBox) return;
     const items = previewBox.querySelectorAll('[data-attachment-item="true"]');
-
+    console.log(items)
+    console.log(items.length)
+    if(items.length <=0){
+      previewBox.classList.add("hidden");
+    }
+    previewBox.classList.remove("hidden");
     items.forEach((item, newIndex) => {
       item.dataset.index = newIndex;
       const btn = item.querySelector("button[data-remove]");
@@ -123,6 +132,20 @@ export default class extends Controller {
     box.classList.remove("hidden");
 
     clearTimeout(this._msgTimer);
-    this._msgTimer = setTimeout(() => box.classList.add("hidden"), 5000);
+    this._msgTimer = setTimeout(() => {
+      box.classList.add("hidden");
+      box.textContent = "";
+    }, 5000);
+  }
+
+  togglePreviewBox() {
+    if (!this.previewBox) return;
+
+    if (this.files.length > 0) {
+      this.previewBox.classList.remove("hidden");
+    } else {
+      this.previewBox.classList.add("hidden");
+      this.previewBox.innerHTML = "";
+    }
   }
 }

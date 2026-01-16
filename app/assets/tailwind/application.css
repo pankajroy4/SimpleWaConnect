@@ -107,7 +107,7 @@ input:-webkit-autofill {
   caret-color: #fff !important;
 }
 
-.hide-scrollbar, .message-list-scroll {
+.scrollbar-design, .message-list-scroll {
   -ms-overflow-style: none;
   scrollbar-color: rgb(var(--border)) transparent;
 }

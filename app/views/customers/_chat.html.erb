@@ -6,7 +6,7 @@
       <!-- LEFT GROUP: hamburger + avatar + name -->
       <div class="flex items-center space-x-3 min-w-0">
         <!-- Mobile sidebar open -->
-        <button type="button" data-action="click->mobile-sidebar#open" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full flex-shrink-0 hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))] text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] transition" title="Open chats">
+        <button type="button" data-action="click->mobile-sidebar#open" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full flex-shrink-0 hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))] text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] transition cursor-pointer" title="Open chats">
           <i class="bx bx-menu text-2xl"></i>
         </button>
         <!-- Avatar -->
@@ -48,9 +48,9 @@
     </header>
 
     <!-- CHAT BODY -->
-    <main data-controller="auto-scroll scrollbar infinite-scroll chat-message-sound" 
+    <main data-controller="auto-scroll infinite-scroll chat-message-sound" 
     data-chat-message-sound-customer-id-value="<%= @customer.id %>"
-    data-auto-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-next-page-value="<%= @pagy&.next %>" class=" flex-1 overflow-y-auto p-6 bg-[rgb(var(--chat-bg))] chat-wallpaper" id="messages-list-<%= @customer.id %>">
+    data-auto-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-customer-id-value="<%= @customer.id %>" data-infinite-scroll-next-page-value="<%= @pagy&.next %>" class=" flex-1 overflow-y-auto p-6 bg-[rgb(var(--chat-bg))] chat-wallpaper scrollbar-design" id="messages-list-<%= @customer.id %>">
       <div id="infinite-loading-<%= @customer.id %>" class="text-center text-[rgb(var(--muted))] my-4 hidden flex items-center justify-center">
         <i class='bx bx-loader-alt bx-spin text-2xl'></i>
       </div>
