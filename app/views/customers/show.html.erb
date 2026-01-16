@@ -1,3 +1,4 @@
+<%if false %>
 <!-- app/views/customers/show.html.erb -->
 <turbo-frame id="chat_frame">
   <script>window.CURRENT_USER_ID = <%= current_user.id %>;</script>
@@ -49,3 +50,13 @@
     </section>
   </div>
 </turbo-frame>
+<%end%>
+
+<!-- ============================================================================================= -->
+
+<%if true %>
+<!-- app/views/customers/show.html.erb -->
+<turbo-frame id="chat_frame">
+  <%= render partial: "customers/chat", locals: { customer: @customer, messages: @messages, pagy: @pagy } %>
+</turbo-frame>
+<%end%>

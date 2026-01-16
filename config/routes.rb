@@ -33,7 +33,10 @@ Rails.application.routes.draw do
 
   # web messaging routes
   # messaging routes (add/merge)
-  resources :customers, only: [:index, :show] do
+  resources :customers, path: "chats", only: [:index, :show] do
+    collection do
+      get :infinite_scroll
+    end
     resources :messages, only: [:index, :create] do
       member do
         post :retry

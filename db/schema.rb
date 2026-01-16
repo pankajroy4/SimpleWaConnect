@@ -54,6 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_20_195317) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_messages_on_account_id"
+    t.index ["customer_id", "created_at", "id"], name: "idx_messages_customer_created_id"
     t.index ["customer_id"], name: "index_messages_on_customer_id"
     t.index ["status"], name: "index_messages_on_status"
     t.index ["template_id"], name: "index_messages_on_template_id"

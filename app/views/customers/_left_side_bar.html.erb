@@ -1,3 +1,4 @@
+<%if false%>
 <div data-controller="customers-sidebar" class="w-80 bg-[#0f1b1c] border-r  border-[#2A3942] flex flex-col">
   <!-- Top header -->
   <div class="p-4 flex items-center justify-between border-b border-[#122022]">
@@ -58,3 +59,80 @@
     © <%= Time.current.year %> • Simple WA Connect 
   </div>
 </div>
+<%end%>
+
+
+  <!-- ============================================================================================= -->
+
+
+<%if true%>
+<div data-controller="customers-sidebar" class="h-full w-full bg-[rgb(var(--panel))] border-r border-[rgb(var(--border))] flex flex-col">
+  <!-- Top header -->
+  <div class="h-16 px-4 flex items-center justify-between border-b border-[rgb(var(--border))]">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center font-semibold flex-shrink-0 uppercase bg-gradient-to-br from-slate-100 via-white to-slate-300 text-slate-800 ring-1 ring-slate-300 shadow-[0_1px_2px_rgba(0,0,0,0.10)] dark:from-slate-600 dark:via-slate-700 dark:to-slate-900 dark:text-slate-100 dark:ring-white/10 dark:shadow-none">
+        <span class="drop-shadow-[0_1px_0_rgba(255,255,255,0.8)] dark:drop-shadow-none">
+          <%= current_user.name.to_s[0]&.upcase || "C" %>
+        </span>
+      </div>
+      <div>
+        <div class="text-sm font-semibold text-[rgb(var(--text))]"><%= current_user&.name || "You" %></div>
+        <div class="text-xs text-[rgb(var(--muted))]"><%= current_user&.role.capitalize || "You" %></div>
+      </div>
+    </div>
+
+    <div class="flex items-center text-[rgb(var(--muted))]" data-controller="theme">
+      <!-- Theme Toggle -->
+      <button type="button" data-action="click->theme#toggle" class="p-2 w-9 h-9 rounded-full hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))] cursor-pointer hover:text-[rgb(var(--text))] transition" title="Toggle theme">
+        <span data-theme-target="iconSun" class="hidden">
+          <i class="bx bx-sun text-xl"></i>
+        </span>
+        <span data-theme-target="iconMoon" class="hidden">
+          <i class="bx bx-moon text-xl"></i>
+        </span>
+      </button>
+
+      <!-- Home -->
+      <%= link_to root_path, class: "p-2 w-9 h-9 rounded-full hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))] cursor-pointer hover:text-[rgb(var(--text))] transition", title: "Home" do %>
+        <i class='bx bx-home text-xl'></i>
+      <% end %>
+
+      <!-- logout -->
+      <details data-controller="dropdown" class="relative">
+        <summary class="list-none p-2 w-9 h-9 rounded-full hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))] hover:text-[rgb(var(--text))] transition cursor-pointer" title="Menu">
+          <i class='bx bx-dots-vertical-rounded text-xl'></i>
+        </summary>
+
+        <div class="absolute right-0 mt-2 bg-[rgb(var(--panel))] text-[rgb(var(--text))] rounded-md shadow border border-[rgb(var(--border))] z-50">
+          <%= button_to destroy_user_session_path, method: :delete, data: { turbo_method: :delete, turbo_frame: "_top" }, class: "w-full flex items-center space-x-2 px-4 py-2 text-sm hover:bg-[rgb(var(--hover))] hover:cursor-pointer" do %>
+            <i class='bx bx-log-out text-lg'></i>
+            <span>Logout</span>
+          <% end %>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="p-3 border-b border-[rgb(var(--border))]">
+    <div class="relative">
+      <i class='bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-[rgb(var(--soft))] text-lg'></i>
+      <input type="search" placeholder="Search" data-customers-sidebar-target="search" data-action="input->customers-sidebar#filter" class="w-full pl-10 pr-3 py-2 rounded-xl bg-[rgb(var(--input-bg))] text-[rgb(var(--text))] placeholder:text-[rgb(var(--soft))] border border-[rgb(var(--input-border))] ring-1 ring-[rgb(var(--input-ring))] shadow-[var(--input-shadow)] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/40 dark:shadow-none dark:ring-0"/>
+    </div>
+  </div>
+
+  <!-- Chat list -->
+  <div id="chats-list" data-controller="chats-infinite-scroll" data-chats-infinite-scroll-next-page-value="<%= @pagy_customers&.next %>" class="flex-1 overflow-y-auto message-list-scroll">
+    <div id="chats-container" data-chats-infinite-scroll-target="container">
+      <%= render partial: "customers/list_items", locals: { customers: @customers } %>
+    </div>
+    <div id="chats-infinite-loader" class="text-center text-[rgb(var(--muted))] my-4 hidden flex items-center justify-center">
+      <i class='bx bx-loader-alt bx-spin text-2xl'></i>
+    </div>
+  </div>
+
+  <div class="p-3 border-t border-[rgb(var(--border))] text-xs text-center text-[rgb(var(--muted))]">
+    © <%= Time.current.year %> • Simple WA Connect
+  </div>
+</div>
+<%end%>
