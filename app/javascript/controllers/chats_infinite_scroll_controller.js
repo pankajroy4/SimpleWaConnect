@@ -1,21 +1,14 @@
-// app/javascript/controllers/infinite_scroll_controller.js
+// app/javascript/controllers/chats_infinite_scroll_controller.js
 import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
-  static values = {
-    customerId: Number,
-    nextPage: String, // Pagy cursor token
-  };
-
+  static values = { nextPage: String };
   static targets = ["container"];
 
   connect() {
     this.loading = false;
     this.hasMore = true;
-    this.isAdjustingScroll = false;
-    this.lastScrollTop = this.element.scrollTop;
     this.boundOnScroll = this.onScroll.bind(this);
     this.element.addEventListener("scroll", this.boundOnScroll);
-
     if (!this.nextPageValue || this.nextPageValue.trim() === "") {
       this.hasMore = false;
     }
@@ -26,14 +19,11 @@ export default class extends Controller {
   }
 
   async onScroll() {
-    if (this.isAdjustingScroll) return;
-    const currentTop = this.element.scrollTop;
-    const scrollingUp = currentTop < this.lastScrollTop;
-    this.lastScrollTop = currentTop;
-
-    if (!scrollingUp) return;
     if (this.loading || !this.hasMore) return;
-    if (currentTop > 40) return;
+    // near bottom trigger (down scroll)
+    const threshold = 120; // px
+    const bottomOffset = this.element.scrollHeight - (this.element.scrollTop + this.element.clientHeight);
+    if (bottomOffset > threshold) return;
     this.loading = true;
     try {
       await this.loadMore();
@@ -48,13 +38,11 @@ export default class extends Controller {
       return;
     }
 
-    const loader = document.getElementById(`infinite-loading-${this.customerIdValue}`);
+    const loader = document.getElementById("chats-infinite-loader");
     loader?.classList.remove("hidden");
-    const prevHeight = this.element.scrollHeight;
 
     try {
-      const url = `/chats/${this.customerIdValue}/messages?page=${encodeURIComponent(this.nextPageValue)}`;
-
+      const url = `/chats/infinite_scroll?page=${encodeURIComponent(this.nextPageValue)}`;
       const response = await fetch(url, {
         headers: { Accept: "text/html" },
       });
@@ -65,7 +53,6 @@ export default class extends Controller {
         this.hasMore = false;
         return;
       }
-
       const temp = document.createElement("div");
       temp.innerHTML = html.trim();
       const wrapper = temp.firstElementChild;
@@ -73,29 +60,15 @@ export default class extends Controller {
         this.hasMore = false;
         return;
       }
+
       const newNextPage = wrapper.dataset.nextPage;
-
-      // mark adjustment phase
-      this.isAdjustingScroll = true;
-      // Insert only message HTML (wrapper contains messages inside)
-      this.element.dispatchEvent(new CustomEvent("infinite-scroll:adjusting", { bubbles: true }));
-
-      this.containerTarget.insertAdjacentHTML("afterbegin", wrapper.innerHTML);
-      // Update cursor for next request
+      // APPEND (important difference vs messages)
+      this.containerTarget.insertAdjacentHTML("beforeend", wrapper.innerHTML);
+      // Update cursor
       this.nextPageValue = newNextPage;
-      // If no new cursor => reached end
       if (!this.nextPageValue || this.nextPageValue.trim() === "") {
         this.hasMore = false;
       }
-      requestAnimationFrame(() => {
-        const newHeight = this.element.scrollHeight;
-        this.element.scrollTop = newHeight - prevHeight;
-        // unlock after browser settles
-        requestAnimationFrame(() => {
-          this.element.dispatchEvent(new CustomEvent("infinite-scroll:done", { bubbles: true }));
-          this.isAdjustingScroll = false;
-        });
-      });
     } catch (e) {
       console.error(e);
     } finally {

@@ -1,14 +1,18 @@
-<%= link_to customer_path(customer), data: { turbo_frame: "chat_frame", action: "click->customers-sidebar#openCustomer", customer_id: customer.id }, class: "block p-3 hover:bg-[#071010]" do %>
-  <div class="chat-item flex items-center gap-3 min-w-0" data-customers-sidebar-target="item" data-customer-id="<%= customer.id %>" data-customer-name="<%= customer.display_name.to_s.downcase %>" data-customer-number="<%= customer.phone_number.to_s %>">
-    <div class="w-10 h-10 rounded-full bg-[#2b3b3a] flex items-center justify-center text-white font-semibold flex-shrink-0">
-      <%= customer.display_name.to_s[0]&.upcase || "C" %>
+<!-- app/views/customers/_list_item.html.erb -->
+<div id="customer_row_<%= customer.id %>">
+<%= link_to customer_path(customer), data: { turbo_frame: "chat_frame", action: "click->customers-sidebar#openCustomer", customer_id: customer.id, customers_sidebar_target: "item", customer_name: customer.display_name.to_s.downcase, customer_number: customer.phone_number.to_s}, class: "customers-sidebar-link relative block p-3 rounded-xl transition hover:bg-[rgb(var(--hover))] hover:ring-1 hover:ring-[rgb(var(--border))]", id: "customer-link-#{customer.id}" do %>
+  <span class="customers-active-indicator pointer-events-none absolute inset-y-0 left-0 w-0.5 rounded bg-[rgb(var(--brand))] opacity-0"></span>
+  <div class="chat-item relative z-0 flex items-center gap-3 min-w-0" >
+    <div class="w-10 h-10 rounded-full flex items-center justify-center font-semibold flex-shrink-0 uppercase bg-gradient-to-br from-slate-100 via-white to-slate-300 text-slate-800 ring-1 ring-slate-300 shadow-[0_1px_2px_rgba(0,0,0,0.10)] dark:from-slate-600 dark:via-slate-700 dark:to-slate-900 dark:text-slate-100 dark:ring-white/10 dark:shadow-none">
+      <span class="drop-shadow-[0_1px_0_rgba(255,255,255,0.8)] dark:drop-shadow-none">
+        <%= customer.display_name.to_s[0]&.upcase || "C" %>
+      </span>
     </div>
-    <div class="flex-1 min-w-0">
-      <div class="text-sm font-semibold text-gray-100 truncate"><%= customer.display_name %></div>
-      <%= render partial: "customers/last_message", locals: { customer: customer } %>
-    </div>
-    <div class="flex-shrink-0 ml-2">
-      <span data-customers-sidebar-target="badge" data-customer-id="<%= customer.id %>" class="unread-badge hidden items-center justify-center font-bold bg-emerald-500 text-white text-[12px] rounded-full px-2 py-0.5">0</span>
+
+    <div id = "last_message_and_badge_<%=customer.id%>" class="relative w-full">
+      <% last_message = local_assigns[:last_message] || (local_assigns[:last_messages] || @last_messages || {})[customer.id] %>
+      <%= render partial: "customers/last_message_and_badge",  locals: { customer: customer, last_message: last_message }  %>
     </div>
   </div>
 <% end %>
+</div>
