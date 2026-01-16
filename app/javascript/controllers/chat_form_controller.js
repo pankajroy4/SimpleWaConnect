@@ -1,5 +1,5 @@
+// app/javascript/controllers/chat_form_controller.js
 import { Controller } from "@hotwired/stimulus";
-
 export default class extends Controller {
   reset() {
     // Reset entire form

@@ -1,114 +1,15 @@
 <!-- app/views/messages/_message.html.erb -->
-<%if false %>
-<% outgoing = message.direction == "outgoing" %>
-<div id="<%= dom_id(message, :message) %>" data-message-id="msg-<%= message.id %>" class="w-full mb-3 flex <%= outgoing ? 'justify-end' : 'justify-start' %>">
-  <div class="relative max-w-[75%] break-words shadow-md px-2.5 py-1 text-[14px] leading-snug <%= outgoing ? 'bg-[#005C4B] text-white ml-auto rounded-xl ' : 'bg-[#202C33] text-white mr-auto rounded-xl ' %> before:content-[''] before:absolute before:w-3 before:h-3 before:rotate-45 <%= outgoing ? 'before:bg-[#005C4B] before:-right-1 before:top-3' : 'before:bg-[#202C33] before:-left-1 before:top-3'%>">
-
-    <% media_type = message.payload["media_type"] %>
-    <% if media_type.present? %>
-      <% media_src =
-        if message.payload["media_id"].present?
-          medium_path(message.id)
-        elsif message.payload["media_url"].present?
-          message.payload["media_url"]
-        end
-      %>
-
-      <% case media_type %>
-      <% when "image" %>
-        <%= image_tag media_src, class: "max-w-[240px] rounded-lg mb-2" if media_src.present? %>
-      <% when "video" %>
-        <% if media_src.present? %>
-          <video controls class="max-w-[260px] rounded-lg mb-2 bg-black">
-            <source src="<%= media_src %>" type="video/mp4">
-          </video>
-        <% end %>
-
-      <% when "audio" %>
-        <% if media_src.present? %>
-          <div class="mb-2 bg-black/20 rounded-xl px-3 py-2 flex items-center gap-3">
-            <audio controls class="h-8 flex-1 focus:outline-none">
-              <source src="<%= media_src %>" type="audio/mpeg">
-              Your browser does not support audio playback.
-            </audio>
-
-            <a href="<%= media_src %>" download class="text-white/70 hover:text-white text-xl">
-              <i class='bx bx-download'></i>
-            </a>
-          </div>
-        <% end %>
-
-      <% when "document" %>
-        <div class="flex items-center gap-3 p-3 mb-2 bg-black/20 rounded-xl border border-gray-200">
-          <div class="w-10 h-12 bg-red-100 rounded flex items-center justify-center">
-            <i class='bx bx-file text-red-500 text-2xl'></i>
-          </div>
-
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-white truncate">
-              <%= message.payload["filename"].presence || "Document.pdf" %>
-            </p>
-            <p class="text-xs text-white">1.2 MB</p>
-          </div>
-
-          <a href="<%= media_src %>" download class="text-white hover:text-gray-400">
-            <i class='bx bx-download text-xl'></i>
-          </a>
-        </div>
-      <% end %>
-    <% end %>
-
-    <% if message.template_message? && !message.payload["body_text"].present?%>
-      Template Message
-    <%else%>
-      <% if message.payload["body_text"].present? %>
-        <div class="break-words break-all overflow-hidden">
-          <%= message.payload["body_text"] %>
-        </div>
-      <% end %>
-
-      <% if message.payload["caption"] %>
-        <div class="mt-1 opacity-90">
-          <%= message.payload["caption"] %>
-        </div>
-      <% end %>
-    <% end %>
-
-    <div class="flex justify-end items-center gap-1 text-[10px] opacity-80">
-
-      <% if outgoing && message.user.present? %>
-        <span class="text-white/70">
-          <%= message.user.name %>
-        </span>
-        <span class="text-white/40">•</span>
-      <% end %>
-
-      <span>
-        <%= message.created_at.strftime("%I:%M %p") %>
-      </span>
-
-      <% if outgoing %>
-        <%= render partial: "messages/status_tick", locals: { message: message } %>
-      <% end %>
-    </div>
-  </div>
-</div>
-<%end%>
-
-<!--  ==================================================================================== --->
-
-<%if true %>
 <% outgoing = message.outgoing? %>
-<div id="<%= dom_id(message, :message) %>" data-message-id="msg-<%= message.id %>" class="w-full mb-2 flex <%= outgoing ? 'justify-end' : 'justify-start' %> ">
-  <div class="relative inline-flex flex-col max-w-[85%] sm:max-w-[70%] min-w-[96px] px-2 py-1 shadow-sm <%= outgoing ? 'bg-[#005C4B] text-white rounded-l-lg rounded-br-lg' : 'bg-[#202C33] text-white rounded-r-lg rounded-bl-lg' %>">
+<div id="<%= dom_id(message, :message) %>" data-message-id="msg-<%= message.id %>" data-direction="<%= message.direction %>" class="w-full mb-2 flex <%= outgoing ? 'justify-end' : 'justify-start' %> ">
+  <div class="relative inline-flex flex-col max-w-[85%] sm:max-w-[70%] min-w-[96px] px-2 py-1 shadow-sm <%= outgoing ? 'bg-[rgb(var(--bubble-out))] text-[rgb(var(--bubble-out-text))] rounded-l-lg rounded-br-lg' : 'bg-[rgb(var(--bubble-in))] text-[rgb(var(--bubble-in-text))] rounded-r-lg rounded-bl-lg' %>">
     <% if outgoing %>
-      <div class="absolute top-0 -right-2 w-3 h-[13px] text-[#005C4B]">
+      <div class="absolute top-0 -right-2 w-3 h-[13px] text-[rgb(var(--bubble-out))]">
         <svg viewBox="0 0 8 13" preserveAspectRatio="none" class="w-full h-full fill-current">
           <path d="M0 0v13l8-13H0z"></path>
         </svg>
       </div>
     <% else %>
-      <div class="absolute top-0 -left-2 w-3 h-[13px] text-[#202C33]">
+      <div class="absolute top-0 -left-2 w-3 h-[13px] text-[rgb(var(--bubble-in))]">
         <svg viewBox="0 0 8 13" preserveAspectRatio="none" class="w-full h-full fill-current">
           <path d="M8 0v13L0 0h8z"></path>
         </svg>
@@ -121,21 +22,21 @@
     <% if media_type.present? %>
       <div class="mb-0.5">
         <% if media_type == "location" %>
-            <% lat = message.payload["latitude"] %>
-            <% lng = message.payload["longitude"] %>
-            <% maps_url = "https://www.google.com/maps?q=#{lat},#{lng}" %>
-            <a href="<%= maps_url %>" target="_blank" rel="noopener" class="block w-[280px] max-w-full overflow-hidden rounded-lg border border-black/10 bg-white">
-              <div class="h-[140px] w-full overflow-hidden rounded-t-lg bg-gray-200 ">
-                <%= image_tag "fake_map_preview.jpg", class: "w-full h-full object-cover opacity-90" %>
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
-                  <i class="bx bxs-map text-red-500 text-[22px] drop-shadow-md"></i>
-                </div>
+          <% lat = message.payload["latitude"] %>
+          <% lng = message.payload["longitude"] %>
+          <% maps_url = "https://www.google.com/maps?q=#{lat},#{lng}" %>
+          <a href="<%= maps_url %>" target="_blank" rel="noopener" class="block w-[280px] max-w-full overflow-hidden rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--panel))]">
+            <div class="h-[140px] w-full overflow-hidden rounded-t-lg bg-[rgb(var(--hover))] relative">
+              <%= image_tag "fake_map_preview.jpg", class: "w-full h-full object-cover opacity-90" %>
+              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
+                <i class="bx bxs-map text-red-500 text-[22px] drop-shadow-md"></i>
               </div>
-              <div class="px-2 py-1.5 bg-gray-200 rounded border border-black/10">
-                <div class="text-[13px] font-medium text-[#303030]">Location</div>
-                <div class="text-[11px] text-[#667781]"><%= lat %>, <%= lng %></div>
-              </div>
-            </a>
+            </div>
+            <div class="px-2 py-1.5 bg-[rgb(var(--hover))] rounded border-t border-[rgb(var(--border))]">
+              <div class="text-[13px] font-medium text-[rgb(var(--text))]">Location</div>
+              <div class="text-[11px] text-[rgb(var(--muted))]"><%= lat %>, <%= lng %></div>
+            </div>
+          </a>
         <% else %>
           <% media_src = if message.payload["media_id"].present?
               medium_path(message.id)
@@ -147,7 +48,7 @@
           <% if media_src.present? %> 
             <% case media_type %>
             <% when "image" %>
-              <div class="relative max-w-[280px] rounded-lg overflow-hidden bg-black/5 group">
+              <div class="relative max-w-[280px] rounded-lg overflow-hidden bg-black/5 dark:bg-black/20 group">
                 <%= image_tag media_src, class: "w-full max-h-[320px] object-contain block"%>
                 <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                 <a href="<%= media_src %>" download class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
@@ -170,7 +71,7 @@
               </div>
 
             <% when "audio" %>
-              <div class="mb-1 bg-black/20 rounded-xl px-3 py-2 flex items-center gap-3">
+              <div class="mb-1 bg-black/10 dark:bg-black/20 rounded-xl px-3 py-2 flex items-center gap-3">
                 <audio controls class="h-8 flex-1 focus:outline-none">
                   <source src="<%= media_src %>" type="audio/mpeg">
                   Your browser does not support audio playback.
@@ -181,8 +82,8 @@
               </div>
 
             <% when "document" %>
-              <div class="flex items-center gap-3 p-2 bg-black/5 rounded border border-black/10">
-                <i class="bx bx-file text-2xl text-gray-500"></i>
+              <div class="flex items-center gap-3 p-2 bg-black/5 dark:bg-black/20 rounded border border-[rgb(var(--border))]">
+                <i class="bx bx-file text-2xl text-[rgb(var(--muted))]"></i>
                 <span class="text-xs truncate flex-1">
                   <%= message.payload["filename"].presence || "Document" %>
                 </span>
@@ -214,12 +115,12 @@
     <!-- Sender and time-stamp -->
     <div class="flex justify-end items-center gap-1 text-[10px] opacity-80">
       <% if outgoing && message.user.present? %>
-        <span class="text-white/70">
+        <span class="text-[rgb(var(--bubble-meta))]">
           <%= message.user.name %>
         </span>
         <span class="text-white/40">•</span>
       <% end %>
-      <span>
+     <span class="text-[rgb(var(--bubble-meta))]">
         <%= message.created_at.strftime("%I:%M %p") %>
       </span>
       <% if outgoing %>
@@ -228,4 +129,3 @@
     </div>
   </div>
 </div>
-<% end %>
