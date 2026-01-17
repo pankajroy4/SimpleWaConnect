@@ -27,7 +27,12 @@
           <% maps_url = "https://www.google.com/maps?q=#{lat},#{lng}" %>
           <a href="<%= maps_url %>" target="_blank" rel="noopener" class="block w-[280px] max-w-full overflow-hidden rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--panel))]">
             <div class="h-[140px] w-full overflow-hidden rounded-t-lg bg-[rgb(var(--hover))] relative">
-              <%= image_tag "fake_map_preview.jpg", class: "w-full h-full object-cover opacity-90" %>
+              <div class="h-[140px] w-full overflow-hidden rounded-t-lg bg-[rgb(var(--hover))] relative">
+                <div class="map-preview w-full h-full opacity-90"></div>
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
+                  <i class="bx bxs-map text-red-500 text-[22px] drop-shadow-md"></i>
+                </div>
+              </div>
               <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
                 <i class="bx bxs-map text-red-500 text-[22px] drop-shadow-md"></i>
               </div>
