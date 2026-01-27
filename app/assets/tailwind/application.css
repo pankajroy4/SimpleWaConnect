@@ -1,28 +1,98 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
-    @apply bg-gray-900 text-gray-100;
+  :root {
+    /* Surfaces */
+    --app-bg: 245 246 248;          /* app outer background */
+    --chat-bg: 240 242 245;         /* chat area background */
+    --panel: 255 255 255;           /* sidebar/chat panel */
+    --panel-2: 250 251 252;         /* input area */
+    --header: 255 255 255;          /* header */
+    --border: 226 232 240;          /* border */
+
+    /* Inputs */
+    --input-bg: 248 250 252;          /* slate-50 */
+    --input-border: 203 213 225;      /* slate-300 */
+    --input-ring: 226 232 240;        /* slate-200 */
+    --input-shadow: 0 1px 2px rgba(0,0,0,0.10);
+    --input-shadow-inset: inset 0 1px 2px rgba(0,0,0,0.06);
+
+    /* Text */
+    --text: 15 23 42;               /* slate-900 */
+    --muted: 71 85 105;             /* slate-600 */
+    --soft: 100 116 139;            /* slate-500 */
+
+    /* Interaction */
+    --hover: 241 245 249;           /* slate-100 */
+    --row-hover: 226 232 240;       /* slate-200 */
+    --ring: 18 140 126;
+    --brand: 18 140 126;
+
+    /* Chat bubbles (LIGHT MODE tuned) */
+    --bubble-out: 220 248 198;      /* WhatsApp outgoing bubble */
+    --bubble-out-text: 15 23 42;    /* outgoing text should NOT be white */
+    --bubble-in: 255 255 255;       /* incoming bubble */
+    --bubble-in-text: 15 23 42;
+    /* Timestamps */
+    --bubble-meta: 100 116 139;     /* slate-500 */
   }
 
-  a {
-    @apply text-indigo-400 hover:text-indigo-300;
+  html.dark {
+    --app-bg: 11 20 23;             /* #0b1417 */
+    --panel: 15 27 28;              /* #0f1b1c */
+    --panel-2: 6 16 16;             /* #061010 */
+    --header: 6 16 16;              /* header */
+    --border: 42 57 66;             /* #2A3942 */
+
+    --text: 241 245 249;            /* slate-100 */
+    --muted: 148 163 184;           /* slate-400 */
+    --soft: 100 116 139;            /* slate-500 */
+
+    --hover: 7 16 16;               /* hover bg */
+    --ring: 5 94 76;                /* #055e4c */
+    --brand: 18 140 126;
+
+    --bubble-out: 0 92 75;          /* #005C4B */
+    --bubble-in: 32 44 51;          /* #202C33 */
+    --chat-bg: 11 20 23;
+
+    --bubble-out-text: 255 255 255;
+    --bubble-in-text: 241 245 249;
+    --bubble-meta: 148 163 184;
+    --input-bg: 6 16 16;              /* same as panel-2 */
+    --input-border: 42 57 66;         /* border */
+    --input-ring: 0 0 0;              /* not used much in dark */
+    --input-shadow: none;
+    --input-shadow-inset: none;
   }
 
   input, button {
     @apply focus:outline-none;
   }
+
+  body {
+    background-color: rgb(var(--app-bg));
+    color: rgb(var(--text));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .chat-wallpaper {
+    background-color: rgb(var(--chat-bg));
+    background-image: url("/assets/whatsapp_bg_light.png");
+    background-repeat: repeat;
+    background-size: 420px auto;
+  }
+
+  html.dark .chat-wallpaper {
+    background-color: rgb(var(--chat-bg));
+    background-image: url("/assets/whatsapp_bg_dark_2.png");
+  }
 }
 
 @keyframes appear-then-fade {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  5%,
-  60% {
-    opacity: 1;
-  }
+  0%,100% { opacity: 0; }
+  5%,60% { opacity: 1; }
 }
 
 .flash_message {
@@ -37,28 +107,10 @@ input:-webkit-autofill {
   caret-color: #fff !important;
 }
 
-body.whatsapp-dark {
-  background-color: #0b1417;
-  background-image:
-    radial-gradient(circle at 40% 20%, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px),
-    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px);
-  background-size: 220px 220px, 180px 180px;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+.scrollbar-design, .message-list-scroll {
+  -ms-overflow-style: none;
+  scrollbar-color: rgb(var(--border)) transparent;
 }
-/* .message-list-scroll::-webkit-scrollbar { width: 10px; }
-.message-list-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 10px; }
-.message-list-scroll::-webkit-scrollbar-track { background: transparent; } */
-
-.hide-scrollbar, .message-list-scroll {
-  -ms-overflow-style: none;    
-   scrollbar-color: #202C33 transparent;
-
-}
-
-/* .hide-scrollbar::-webkit-scrollbar {
-  display: none;               
-} */
 
 #attachment-preview {
   scroll-behavior: smooth;
@@ -68,6 +120,9 @@ body.whatsapp-dark {
   height: 6px;
 }
 #attachment-preview::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(100,116,139,0.4);
   border-radius: 10px;
+}
+html.dark #attachment-preview::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
 }

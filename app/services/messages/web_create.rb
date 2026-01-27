@@ -38,8 +38,8 @@ module Messages
         )
 
         unless upload.success?
-          error = JSON.parse(upload.error)
-          message = error&.dig("error", "message") || "An error occurred while uploading media!"
+          error = JSON.parse(upload.error.to_s) rescue nil
+          message = error&.dig("error", "message") || upload.error.presence || "An error occurred while uploading media!"
           return Result.new(false, nil, message)
         end
 

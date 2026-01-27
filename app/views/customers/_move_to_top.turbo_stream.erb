@@ -1,0 +1,6 @@
+<!-- app/views/customers/_move_to_top.turbo_stream.erb -->
+
+<%= turbo_stream.remove "customer_row_#{customer.id}" %>
+<%= turbo_stream.prepend "chats-container" do %>
+  <%= render partial: "customers/list_item",  locals: { customer: customer, last_message: last_message } %>
+<% end %>
