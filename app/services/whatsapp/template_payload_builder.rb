@@ -120,30 +120,70 @@ module Whatsapp
     # ========================= BUTTONS ===========================
 
     def buttons_needed?
-      @template.button_variables.present?
+      @template.button_variables.present? || @template.buttons.present?
     end
 
     def button_components
-      @template.buttons.each_with_index.map do |btn, idx|
-        case btn["type"]
-        when "quick_reply"
+      Array(@template.buttons).each_with_index.map do |btn, idx|
+        btn_type = btn["type"].to_s
+
+        case btn_type
+        when "quick_reply" # QUICK REPLY (custom / preconfigured -> same at payload level)
           {
             type: "button",
             sub_type: "quick_reply",
             index: idx,
             parameters: [],
           }
-        when "url"
+        when "url" # URL BUTTON (STATIC / DYNAMIC) - Only dynamic URL takes parameters
+          variable_key = btn["variable"]&.to_sym
+          url_param_text = variable_key.present? ? @params.dig(:button_vars, variable_key).to_s : nil
+
           {
             type: "button",
             sub_type: "url",
             index: idx,
+            parameters: url_param_text.present? ? [{ type: "text", text: url_param_text }] : [],
+          # Here, the key 'text' is variable that we want to append in the url.
+          }
+        when "call_on_phone" # PHONE NUMBER BUTTON (static in template)
+          {
+            type: "button",
+            sub_type: "voice_call",
+            index: idx,
+            parameters: [],
+          }
+        when "copy_code", "COPY_CODE"
+          variable_key = btn["variable"]&.to_sym || :coupon_code
+          code_value = @params.dig(:button_vars, variable_key).to_s
+
+          if code_value.blank?
+            next nil
+          end
+
+          {
+            type: "button",
+            sub_type: "copy_code",
+            index: idx,
             parameters: [
-              { type: "text", text: @params[:button_vars][btn["variable"]&.to_sym].to_s },
-              # Here, the key 'text' is variable that we want to append in the url.
+              {
+                type: "coupon_code",
+                coupon_code: code_value,
+              },
             ],
           }
+        when "call_on_whatsapp" # CALL ON WHATSAPP - In Meta dashboard this is static
+          {
+            type: "button",
+            sub_type: "voice_call",
+            index: idx,
+            parameters: [],
+          }
         else
+          Rails.logger.warn(
+            "Unsupported WhatsApp template button type: #{btn_type}. " \
+            "template_id=#{@template.id} template_name=#{@template.name} button=#{btn.inspect}"
+          )
           nil
         end
       end.compact

@@ -4,7 +4,7 @@ class Customer < ApplicationRecord
   has_many :messages
 
   validates :phone_number, presence: true
-  after_create_commit :broadcast_creation, unless: :bulk_created?
+  # after_create_commit :broadcast_creation, unless: :bulk_created?
 
   def display_name
     name.presence || phone_number
@@ -16,7 +16,7 @@ class Customer < ApplicationRecord
 
   private
 
-  def broadcast_creation
-    broadcast_prepend_to "customers_list", target: "chats-list", partial: "customers/list_item", locals: { customer: self }
-  end
+  # def broadcast_creation
+  #   broadcast_prepend_to "customers_list", target: "chats-list", partial: "customers/list_item", locals: { customer: self }
+  # end
 end

@@ -112,12 +112,21 @@ module Messages
       end
     end
 
+    # def is_group_messages(messages)
+    #   return true if messages.size > 1
+
+    #   return true if messages.first[:recipients].size > 1
+
+    #   false
+    # end
+
     def is_group_messages(messages)
+      return false if messages.blank?
+
       return true if messages.size > 1
 
-      return true if messages.first[:recipients].size > 1
-
-      false
+      recipients = messages.first[:recipients] || []
+      recipients.size > 1
     end
 
     def success(data)
