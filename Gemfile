@@ -65,6 +65,13 @@ group :test do
   gem "selenium-webdriver"
 end
 
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'shoulda-matchers'
+end
+
 
 gem 'tailwindcss-rails'
 gem "activerecord-import"
