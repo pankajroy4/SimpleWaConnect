@@ -1,102 +1,4 @@
-// import { Controller } from "@hotwired/stimulus";
-
-// export default class extends Controller {
-//   static values = {
-//     customerId: Number,
-//   };
-
-//   static targets = ["container"];
-
-//   connect() {
-//     this.loading = false;
-//     this.hasMore = true;
-//     this.isAdjustingScroll = false;
-//     this.oldestMessageId = null;
-//     this.lastScrollTop = this.element.scrollTop;
-//     this.boundOnScroll = this.onScroll.bind(this);
-//     this.element.addEventListener("scroll", this.boundOnScroll);
-//   }
-
-//   disconnect() {
-//     this.element.removeEventListener("scroll", this.boundOnScroll);
-//   }
-
-//   async onScroll() {
-//     // ignore scrolls caused by our own adjustments
-//     if (this.isAdjustingScroll) return;
-//     const currentTop = this.element.scrollTop;
-//     const scrollingUp = currentTop < this.lastScrollTop;
-//     this.lastScrollTop = currentTop;
-//     // ignore scroll-down completely
-//     if (!scrollingUp) return;
-//     // ignore if already loading or no more data
-//     if (this.loading || !this.hasMore) return;
-//     // only trigger very close to top
-//     if (currentTop > 40) return;
-//     this.loading = true;
-//     await this.loadMore();
-//     this.loading = false;
-//   }
-
-//   async loadMore() {
-//     const firstMessage =
-//       this.containerTarget.querySelector("[data-message-id]");
-
-//     if (!firstMessage) {
-//       this.hasMore = false;
-//       return;
-//     }
-
-//     const beforeId = firstMessage.dataset.messageId.replace("msg-", "");
-//     // STOP: we already tried loading before this id
-//     if (this.oldestMessageId === beforeId) {
-//       this.hasMore = false;
-//       return;
-//     }
-
-//     this.oldestMessageId = beforeId;
-
-//     const loader = document.getElementById(
-//       `infinite-loading-${this.customerIdValue}`
-//     );
-//     loader?.classList.remove("hidden");
-//     const prevHeight = this.element.scrollHeight;
-
-//     try {
-//       const response = await fetch(
-//         `/customers/${this.customerIdValue}/messages?before_id=${beforeId}`
-//       );
-
-//       if (!response.ok) throw new Error("Request failed");
-//       const html = await response.text();
-//       if (!html.trim()) {
-//         this.hasMore = false;
-//         return;
-//       }
-
-//       // mark adjustment phase
-//       this.isAdjustingScroll = true;
-//       this.containerTarget.insertAdjacentHTML("afterbegin", html);
-
-//       // wait for layout to settle
-//       requestAnimationFrame(() => {
-//         const newHeight = this.element.scrollHeight;
-//         this.element.scrollTop = newHeight - prevHeight;
-//         // unlock after browser settles
-//         requestAnimationFrame(() => {
-//           this.isAdjustingScroll = false;
-//         });
-//       });
-//     } catch (e) {
-//       console.error(e);
-//     } finally {
-//       loader?.classList.add("hidden");
-//     }
-//   }
-// }
-
-
-
+// app/javascript/controllers/infinite_scroll_controller.js
 import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static values = {
@@ -151,7 +53,7 @@ export default class extends Controller {
     const prevHeight = this.element.scrollHeight;
 
     try {
-      const url = `/customers/${this.customerIdValue}/messages?page=${encodeURIComponent(this.nextPageValue)}`;
+      const url = `/chats/${this.customerIdValue}/messages?page=${encodeURIComponent(this.nextPageValue)}`;
 
       const response = await fetch(url, {
         headers: { Accept: "text/html" },
@@ -176,6 +78,8 @@ export default class extends Controller {
       // mark adjustment phase
       this.isAdjustingScroll = true;
       // Insert only message HTML (wrapper contains messages inside)
+      this.element.dispatchEvent(new CustomEvent("infinite-scroll:adjusting", { bubbles: true }));
+
       this.containerTarget.insertAdjacentHTML("afterbegin", wrapper.innerHTML);
       // Update cursor for next request
       this.nextPageValue = newNextPage;
@@ -188,6 +92,7 @@ export default class extends Controller {
         this.element.scrollTop = newHeight - prevHeight;
         // unlock after browser settles
         requestAnimationFrame(() => {
+          this.element.dispatchEvent(new CustomEvent("infinite-scroll:done", { bubbles: true }));
           this.isAdjustingScroll = false;
         });
       });

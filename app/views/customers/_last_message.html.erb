@@ -1,8 +1,10 @@
-<div id="<%= dom_id(customer, :last_message) %>" class="w-full block text-xs text-gray-400 flex items-center justify-between gap-2 min-w-0">
-  <span class="truncate overflow-hidden whitespace-nowrap min-w-0 flex-1 text-[12px]">
-    <%= customer.messages.last&.payload&.dig("body_text") %>
+<!--- app/views/customers/_last_message.html.erb -->
+<div id="<%= dom_id(customer, :last_message) %>" class="w-full block text-xs text-[rgb(var(--muted))] flex items-center justify-between gap-2 min-w-0 overflow-hidden">
+  <span class="truncate overflow-hidden whitespace-nowrap min-w-0 flex-1 text-[12px]" data-unread-count="<%= customer.unread_count.to_i %>" data-customer-id="<%= customer.id %>"> 
+      <%last =  last_message&.payload&.dig("body_text") || last_message&.payload&.dig("media_type")&.humanize %>
+    <%= last %>
   </span>
-  <span class="text-[10px] whitespace-nowrap flex-shrink-0 ml-2">
-    <%= customer.messages.last&.created_at&.strftime("%I:%M %p") %>
+  <span class="text-[10px] whitespace-nowrap flex-shrink-0 ml-3">
+    <%= last_message&.created_at&.strftime("%I:%M %p") %>
   </span>
 </div>

@@ -5,16 +5,14 @@ class Template < ApplicationRecord
   validates :name, :language_code, :account, :media_type, presence: true
 
   def validate_variables_presence!(vars)
-    required = Array(variables).map(&:to_s)
+    required = Array(body_variables).map(&:to_s)
 
     missing = required.select do |key|
       val = vars[key]
       val.nil? || val.to_s.strip == ""
     end
 
-    if missing.any?
-      raise MissingVariablesError, "Missing or empty variables: #{missing.join(", ")}"
-    end
+    raise MissingVariablesError, "Missing or empty variables: #{missing.join(", ")}" if missing.any?
 
     true
   end

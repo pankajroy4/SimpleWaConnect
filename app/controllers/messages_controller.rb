@@ -1,3 +1,4 @@
+# ============== app/controllers/messages_controller.rb ==============
 class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_account
@@ -29,6 +30,7 @@ class MessagesController < ApplicationController
     end
 
     @message = result.message
+    puts "\n\n\n================= \n #{@message.inspect}\n==================\n\n\n"
 
     respond_to do |format|
       format.turbo_stream { render "messages/create", locals: { new_message: @message } }
