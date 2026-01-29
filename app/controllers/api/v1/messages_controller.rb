@@ -35,7 +35,7 @@ class Api::V1::MessagesController < Api::V1::BaseController
 
   def message_params
     params.require(:messages).map do |message|
-      message.permit(:message_type, :sender_phone_number, :template_name, :language_code, :media_url, :filename, :body_text, :media_type, :caption,
+      message.permit(:message_type, :sender_phone_number, :template_name, :language_code, :media_url, :filename, :media_type, :caption, :kind, :text, media: {}, list: {}, cta: {}, buttons: {},
                      recipients: [:name, :mobile_no], header_vars: {}, body_vars: {}, button_vars: {})
     end
   end

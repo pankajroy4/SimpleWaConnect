@@ -8,7 +8,7 @@ class MessageStatusCallbackNotifier::MessageStatusNotifierJob < ApplicationJob
 
   def perform(message_id)
     message = Message.find(message_id)
-    return if message.user.callback_url.blank?
+    # return if message.user.callback_url.blank?
 
     response = MessageStatusCallbackNotifier::Client.notify(message)
     unless response.success?

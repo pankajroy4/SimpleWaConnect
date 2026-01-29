@@ -1,10 +1,10 @@
 class MediaController < ApplicationController
-  ALLOWED_MEDIA_HOSTS = ["lookaside.whatsapp.com", "mmg.whatsapp.net"].freeze
+  ALLOWED_MEDIA_HOSTS = ["lookaside.whatsapp.com", "lookaside.fbsbx.com", "mmg.whatsapp.net"].freeze
   include ActionController::Live
 
   def show
     message = Message.find(params[:id])
-    media_id = message.payload["media_id"]
+    media_id = message.payload["media"]["id"]
     account = message.account
 
     result = Whatsapp::MediaFetcherService.fetch_download_url(

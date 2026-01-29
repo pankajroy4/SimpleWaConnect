@@ -12,9 +12,7 @@ module Whatsapp
       end
 
       def call
-        @messages.each do |msg|
-          process_message(msg)
-        end
+        @messages.each { |msg| process_message(msg) }
       end
 
       private
@@ -65,7 +63,7 @@ module Whatsapp
       end
 
       def create_incoming_message!(payload:, remote_id:)
-        Message.create!(
+        message = Message.create!(
           account: @account,
           customer: @customer,
           message_type: Message.message_types[:non_template_message],
@@ -76,11 +74,16 @@ module Whatsapp
           status: "read",
           remote_id_meta: remote_id,
         )
+
+        MessageStatusCallbackNotifier::MessageStatusNotifierJob.perform_later(message.id)
       end
 
       def handle_text(msg)
         create_incoming_message!(
-          payload: { "body_text" => msg.dig("text", "body") },
+          payload: {
+            kind: "text",
+            text: msg.dig("text", "body"),
+          },
           remote_id: msg["id"],
         )
       end
@@ -88,14 +91,17 @@ module Whatsapp
       def handle_media(msg, type)
         data = msg[type.to_s]
         return unless data && data["id"]
-        media_id = data["id"]
 
         payload = {
-          "media_type" => type.to_s,
-          "media_id" => media_id,
-          "filename" => resolve_filename(type, data),
+          kind: "media",
+          media: {
+            type: type.to_s,
+            id: data["id"],
+            filename: resolve_filename(type, data),
+          },
         }
-        payload["caption"] = data["caption"] if data["caption"]
+
+        payload[:media][:caption] = data["caption"] if data["caption"].present?
 
         create_incoming_message!(
           payload: payload,
@@ -121,14 +127,23 @@ module Whatsapp
         interactive = msg["interactive"]
         return unless interactive
 
-        payload = {
-          "media_type" => "interactive",
-          "interactive_type" => interactive["type"],
-          "title" => interactive.dig("button_reply", "title") ||
-                     interactive.dig("list_reply", "title"),
-          "id" => interactive.dig("button_reply", "id") ||
-                  interactive.dig("list_reply", "id"),
-        }
+        payload = case interactive["type"]
+          when "button_reply"
+            {
+              kind: "button_reply",
+              button_reply: interactive["button_reply"].slice("id", "title"),
+            }
+          when "list_reply"
+            {
+              kind: "list_reply",
+              list_reply: interactive["list_reply"].slice("id", "title", "description"),
+            }
+          else
+            {
+              kind: "interactive",
+              interactive: interactive,
+            }
+          end
 
         create_incoming_message!(
           payload: payload,
@@ -141,10 +156,13 @@ module Whatsapp
         return unless loc
 
         payload = {
-          "media_type" => "location",
-          "latitude" => loc["latitude"],
-          "longitude" => loc["longitude"],
-          "address" => loc["address"],
+          kind: "location",
+          location: {
+            latitude: loc["latitude"],
+            longitude: loc["longitude"],
+            address: loc["address"],
+            name: loc["name"],
+          },
         }
 
         create_incoming_message!(
@@ -158,8 +176,8 @@ module Whatsapp
         return unless contact
 
         payload = {
-          "media_type" => "contact",
-          "contact" => contact,
+          kind: "contact",
+          contact: contact,
         }
 
         create_incoming_message!(

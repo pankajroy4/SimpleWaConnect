@@ -52,30 +52,90 @@ class Messages::CreateValidator
   end
 
   def validate_non_template_message
-    case @params[:media_type].to_s.strip
-    when nil, "", "text"
-      validate_non_template_text
-    when "image", "video", "audio", "document"
-      validate_non_template_media
+    payload = @params || {}
+
+    kind = payload[:kind].to_s
+    case kind
+    when "text"
+      validate_non_template_text_payload(payload)
+    when "media"
+      validate_non_template_media_payload(payload[:media] || {})
+    when "cta_url"
+      validate_non_template_cta_payload(payload[:cta] || {})
+    when "list"
+      validate_non_template_list_payload(payload[:list] || {})
+    when "buttons"
+      validate_non_template_buttons_payload(payload[:buttons] || {})
     else
-      @errors << "Unsupported media type: #{@params[:media_type]}"
+      @errors << "Unsupported message kind: #{kind}"
     end
   end
 
-  def validate_non_template_text
-    if @params[:body_text].blank?
-      @errors << "body_text is required for non-template text message"
-    end
+  def validate_non_template_text_payload(payload)
+    @errors << "text is required" if payload[:text].blank?
   end
 
-  def validate_non_template_media
-    unless @params[:media_url].present? || @params[:media_id].present?
-      @errors << "media_url is required for non-template media message"
+  def validate_non_template_media_payload(media)
+    type = media[:type].to_s
+    unless %w[image video audio document].include?(type)
+      @errors << "Invalid media type"
       return
     end
 
-    if @params[:media_type] == "document" && @params[:filename].blank?
+    if media[:url].blank? && media[:id].blank?
+      @errors << "media url or id is required"
+    end
+
+    if type == "document" && media[:filename].blank?
       @errors << "filename is required for document messages"
+    end
+  end
+
+  def validate_non_template_cta_payload(cta)
+    @errors << "CTA body text missing" if cta[:body].blank?
+    @errors << "CTA button_text missing" if cta[:button_text].blank?
+    @errors << "CTA url missing" if cta[:url].blank?
+  end
+
+  def validate_non_template_list_payload(list)
+    @errors << "list body text missing" if list[:body].blank?
+    @errors << "list button_text missing" if list[:button_text].blank?
+
+    sections = list[:sections] || []
+    if sections.empty?
+      @errors << "list must have at least one section"
+      return
+    end
+
+    sections.each do |section|
+      if section[:rows].blank?
+        @errors << "each list section must have rows"
+      end
+    end
+  end
+
+  def validate_non_template_buttons_payload(data)
+    @errors << "buttons body text missing" if data[:body].blank?
+
+    buttons = data[:buttons] || []
+    if buttons.empty?
+      @errors << "at least one button is required"
+      return
+    end
+
+    if buttons.size > 3
+      @errors << "maximum 3 buttons allowed"
+    end
+
+    buttons.each_with_index do |btn, index|
+      if btn[:id].blank?
+        @errors << "button #{index + 1} id missing"
+      end
+      if btn[:title].blank?
+        @errors << "button #{index + 1} title missing"
+      elsif btn[:title].length > 20
+        @errors << "button #{index + 1} title exceeds 20 characters"
+      end
     end
   end
 
@@ -213,7 +273,7 @@ class Messages::CreateValidator
   end
 
   def non_template_allowed_keys
-    %i[ body_text media_type media_url filename caption media_id ]
+    %i[ kind media text cta list buttons ]
   end
 
   def template_allowed_variable_keys

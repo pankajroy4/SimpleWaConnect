@@ -19,15 +19,12 @@ module Messages
       phone_number_id, display_number = default_sender_number
 
       if @body_text.present?
-        messages_array << {
-          message_type: "non_template_message",
-          sender_phone_number: display_number,
-          recipients: [{
-            name: @customer.name || "User",
-            mobile_no: @customer.phone_number,
-          }],
-          body_text: @body_text,
-        }
+        messages_array << base_message_hash(display_number).merge(
+          {
+            kind: "text",
+            text: @body_text,
+          },
+        )
       end
 
       @attachments.each do |file|
@@ -50,16 +47,16 @@ module Messages
           else "document"
           end
 
-        messages_array << {
-          message_type: "non_template_message",
-          recipients: [{
-            name: @customer.name || "User",
-            mobile_no: @customer.phone_number,
-          }],
-          media_id: upload.media_id,
-          media_type: media_type,
-          filename: upload.filename,
-        }
+        messages_array << base_message_hash(display_number).merge(
+          {
+            kind: "media",
+            media: {
+              type: media_type,
+              id: upload.media_id,
+              filename: upload.filename,
+            },
+          },
+        )
       end
 
       result = Messages::Create.call(
@@ -84,6 +81,17 @@ module Messages
     def default_sender_number
       accnt = @account.whatsapp_phone_numbers.active.first
       [accnt.phone_number_id_meta, accnt.display_number]
+    end
+
+    def base_message_hash(display_number)
+      {
+        message_type: "non_template_message",
+        sender_phone_number: display_number,
+        recipients: [{
+          name: @customer.name || "User",
+          mobile_no: @customer.phone_number,
+        }],
+      }
     end
   end
 end
