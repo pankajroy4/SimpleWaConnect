@@ -4,13 +4,11 @@
 <% kind = payload["kind"] %>
 
 <%
-# Normalize media
-media = payload["media"] || {}
-media_type = media["type"]
+  media = payload["media"] || {}
+  media_type = media["type"]
+  contact = payload["contact"]
 
-# Normalize text
-text_body =
-  case kind
+  text_body = case kind
   when "text" then payload["text"]
   when "cta_url" then payload.dig("cta", "body")
   when "buttons" then payload.dig("buttons", "body")
@@ -18,18 +16,13 @@ text_body =
   else nil
   end
 
-caption = media["caption"]
-# Location
-location = payload["location"]
-# CTA
-cta = payload["cta"]
-# Buttons
-buttons_data = payload["buttons"]
-# List
-list = payload["list"]
-# Replies
-list_reply   = payload["list_reply"]
-button_reply = payload["button_reply"]
+  caption = media["caption"]
+  location = payload["location"]
+  cta = payload["cta"]
+  buttons_data = payload["buttons"]
+  list = payload["list"]
+  list_reply   = payload["list_reply"]
+  button_reply = payload["button_reply"]
 %>
 
 <div id="<%= dom_id(message, :message) %>" data-message-id="msg-<%= message.id %>" data-direction="<%= message.direction %>" class="w-full mb-2 flex <%= outgoing ? 'justify-end' : 'justify-start' %> ">
@@ -106,7 +99,7 @@ button_reply = payload["button_reply"]
               </div>
 
             <% when "audio" %>
-              <div class="mb-1 bg-black/10 dark:bg-black/20 rounded-xl px-3 py-2 flex items-center gap-3">
+              <div class="relative max-w-[280px] mb-1 bg-black/10 dark:bg-black/20 rounded-xl px-3 py-2 flex items-center gap-3">
                 <audio controls class="h-8 flex-1 focus:outline-none">
                   <source src="<%= media_src %>" type="audio/mpeg">
                   Your browser does not support audio playback.
@@ -132,12 +125,43 @@ button_reply = payload["button_reply"]
       </div>
     <% end %>
 
+    <!-- Contact message -->
+    <% if kind == "contact" && contact.present? %>
+      <div class="mb-1 w-[260px] max-w-full rounded-lg border border-[rgb(var(--border))] overflow-hidden bg-[rgb(var(--panel))]">
+        <!-- Header -->
+        <div class="flex items-center gap-3 px-1 py-1 border-b border-[rgb(var(--border))]">
+          <div class="w-8 h-8 rounded-full bg-[rgb(var(--hover))] flex items-center justify-center text-[rgb(var(--muted))]">
+            <i class="bx bxs-user text-[20px]"></i>
+          </div>
+
+          <div class="min-w-0">
+            <div class="font-medium text-[14px] text-[rgb(var(--text))] truncate">
+              <%= contact.dig("name", "formatted_name") %>
+            </div>
+            <div class="text-[12px] text-[rgb(var(--muted))]">Contact</div>
+          </div>
+        </div>
+        <!-- Phone Numbers -->
+        <% contact["phones"]&.each do |phone| %>
+          <div class="flex items-center justify-between px-2 py-2 border-t border-[rgb(var(--border))] text-[13px]">
+            <div class="flex items-center gap-2 text-[rgb(var(--text))]">
+              <i class="bx bx-phone text-[16px] text-[rgb(var(--muted))]"></i>
+              <span><%= phone["phone"] %></span>
+            </div>
+            <span class="text-[11px] text-[rgb(var(--muted))] uppercase">
+              <%= phone["type"] %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
     <!-- Message text -->
     <% if message.template_message? && text_body.blank? %>
-      <div class="text-[14px] leading-[19px] break-words whitespace-pre-line break-all pb-0.5">Template Message</div>
+      <div class="text-[14px] leading-[19px] break-words whitespace-pre-line break-all flex items-center">Template Message</div>
     <% else %>
       <% if text_body.present? %>
-        <div class="text-[14px] leading-[19px] break-words whitespace-pre-line break-all pb-0.5"><%= text_body %></div>
+        <div class="text-[14px] leading-[19px] break-words whitespace-pre-line break-all flex items-center"><%= text_body %></div>
       <% end %>
 
       <% if caption.present? %>
@@ -145,6 +169,77 @@ button_reply = payload["button_reply"]
           <%= caption %>
         </div>
       <% end %>
+    <% end %>
+
+    <!-- CTA URL  -->
+    <% if kind == "cta_url" && cta.present? %>
+      <a href="<%= cta["url"] %>" target="_blank" rel="noopener"
+        class="wa-action mt-2 mb-1 flex items-center justify-center gap-2 text-[14px] font-medium py-2.5 px-3 rounded-lg border border-[rgb(var(--border))] text-[rgb(var(--text))] hover:bg-[rgb(var(--hover))] active:scale-[0.98] transition relative overflow-hidden cursor-pointer">
+        <i class="bx bx-link-external text-[16px] opacity-70"></i>
+        <span><%= cta["button_text"] %></span>
+      </a>
+    <% end %>
+
+    <!-- LIST  -->
+    <% if kind == "list" && list.present? %>
+      <div class="mt-2 mb-1 rounded-lg overflow-hidden border border-[rgb(var(--border))] text-[14px]">
+        <div class="flex items-center gap-2 px-3 py-2 border-b border-[rgb(var(--border))] text-[rgb(var(--muted))] text-[13px] font-medium">
+          <i class="bx bx-list-ul text-[16px]"></i>
+          <span><%= list["button_text"] %></span>
+        </div>
+
+        <% list["sections"]&.each do |section| %>
+          <div class="px-3 py-1.5 text-[11px] uppercase tracking-wide font-semibold bg-[rgb(var(--hover))] text-[rgb(var(--muted))]">
+            <%= section["title"] %>
+          </div>
+
+          <% section["rows"]&.each do |row| %>
+            <div class="wa-action px-3 py-2.5 border-t border-[rgb(var(--border))] hover:bg-[rgb(var(--hover))] active:scale-[0.99] transition relative overflow-hidden cursor-default select-none flex items-start gap-2">
+              <i class="bx bx-radio-circle text-[18px] mt-0.5 text-[rgb(var(--muted))]"></i>
+              <div>
+                <div class="font-medium text-[rgb(var(--text))]"><%= row["title"] %></div>
+                <% if row["description"].present? %>
+                  <div class="text-[12px] text-[rgb(var(--muted))] mt-0.5">
+                    <%= row["description"] %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- BUTTONS  -->
+    <% if kind == "buttons" && buttons_data.present? %>
+      <div class="mt-2 mb-1 rounded-lg overflow-hidden border border-[rgb(var(--border))] divide-y divide-[rgb(var(--border))]">
+        <% buttons_data["buttons"]&.each do |b| %>
+          <div class="wa-action w-full text-center text-[14px] py-2.5 font-medium text-[rgb(var(--text))] bg-transparent hover:bg-[rgb(var(--hover))] cursor-pointer active:scale-[0.98] transition relative overflow-hidden flex items-center justify-center gap-2 cursor-default select-none">
+            <i class="bx bx-reply text-[16px] opacity-70"></i>
+            <span><%= b["title"] %></span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- LIST REPLY  -->
+    <% if kind == "list_reply" && list_reply.present? %>
+      <div class="mt-1 text-[13px] text-[rgb(var(--muted))] flex items-center gap-1">
+        <i class="bx bx-radio-circle-marked text-[18px] text-[rgb(var(--text))]"></i>
+        <span>
+          Selected: <span class="font-medium text-[rgb(var(--text))]"><%= list_reply["title"] %></span>
+        </span>
+      </div>
+    <% end %>
+
+    <!-- BUTTON REPLY  -->
+    <% if kind == "button_reply" && button_reply.present? %>
+      <div class="mt-1 text-[13px] text-[rgb(var(--muted))] flex items-center gap-1">
+      <i class="bx bx-reply text-[16px] opacity-70"></i>
+        <span>
+          Replied: <span class="font-medium text-[rgb(var(--text))]"><%= button_reply["title"] %></span>
+        </span>
+      </div>
     <% end %>
 
     <!-- Sender and time-stamp -->

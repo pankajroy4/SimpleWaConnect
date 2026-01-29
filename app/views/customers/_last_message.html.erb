@@ -1,7 +1,35 @@
-<!--- app/views/customers/_last_message.html.erb -->
+<%
+payload = last_message&.payload || {}
+kind = payload["kind"]
+last = case kind
+  when "text"
+    payload["text"]
+  when "media"
+    type = payload.dig("media", "type")
+    caption = payload.dig("media", "caption")
+    emoji = type == "image" ? "🏞️" : type == "video" ? "🎬" : type == "audio" ? "♫" : type == "document" ? "📄" : ""
+    "#{emoji} #{type&.capitalize}" + (caption.present? ? " - #{caption}" : "")
+  when "cta_url"
+    "🔗 #{payload.dig("cta", "body")}"
+  when "list"
+    "☰ #{payload.dig("list", "body")}"
+  when "buttons"
+    "🔘 #{payload.dig("buttons", "body")}"
+  when "list_reply"
+    "◉ Selected: #{payload.dig("list_reply", "title")}"
+  when "button_reply"
+    "↩️ Replied: #{payload.dig("button_reply", "title")}"
+  when "location"
+    "📍 Location"
+  when "contact"
+    "👤 Contact shared"
+  else
+    "New Message"
+  end
+%>
+
 <div id="<%= dom_id(customer, :last_message) %>" class="w-full block text-xs text-[rgb(var(--muted))] flex items-center justify-between gap-2 min-w-0 overflow-hidden">
-  <span class="truncate overflow-hidden whitespace-nowrap min-w-0 flex-1 text-[12px]" data-unread-count="<%= customer.unread_count.to_i %>" data-customer-id="<%= customer.id %>"> 
-      <%last =  last_message&.payload&.dig("body_text") || last_message&.payload&.dig("media_type")&.humanize %>
+  <span class="truncate overflow-hidden whitespace-nowrap min-w-0 flex-1 text-[12px]" data-unread-count="<%= customer.unread_count.to_i %>" data-customer-id="<%= customer.id %>">
     <%= last %>
   </span>
   <span class="text-[10px] whitespace-nowrap flex-shrink-0 ml-3">

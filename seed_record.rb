@@ -225,3 +225,174 @@ WhatsappCredential.create(account: Account.first, business_id_meta: "1234", waba
     "filename": "invoice.pdf",
   }]
 }
+
+
+# =============================================
+
+=========Text Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "text",
+      "text": "Hello from Simple Dairy"
+    }
+  ]
+}
+
+
+=========Media(Image) Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "media",
+      "media": {
+        "type": "image",
+        "url": "https://nonparticipating-detachedly-cami.ngrok-free.dev/macos.jpg",
+        "caption": "Fresh milk available!"
+      }
+    }
+  ]
+}
+
+=========Media(Video) Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "media",
+      "media": {
+        "type": "video",
+        "url": "https://nonparticipating-detachedly-cami.ngrok-free.dev/dummy.mp4",
+        "caption": "Fresh milk available!"
+      }
+    }
+  ]
+}
+
+=========Media(document- pdf) Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "media",
+      "media": {
+        "type": "document",
+        "url": "https://nonparticipating-detachedly-cami.ngrok-free.dev/dummy.pdf",
+        "caption": "Fresh milk available!",
+        "filename": "xyz"
+      }
+    }
+  ]
+}
+
+=========Media(document- xlsx) Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "media",
+      "media": {
+        "type": "document",
+        "url": "https://nonparticipating-detachedly-cami.ngrok-free.dev/dummy.xlsx",
+        "caption": "Fresh milk available!",
+        "filename": "xyz"
+      }
+    }
+  ]
+}
+
+=========CTA url Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "cta_url",
+      "cta": {
+        "body": "Click below to place your order",
+        "button_text": "Place Order",
+        "url": "https://www.simpledairy.com"
+      }
+    }
+  ]
+}
+
+
+=========List Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [
+        { "name": "Pankaj", "mobile_no": "917488430065" }
+      ],
+      "kind": "list",
+      "list": {
+        "header": "Our Products",
+        "body": "Choose one item",
+        "button_text": "View Items",
+        "footer": "thank you",
+        "sections": [
+          {
+            "title": "Select Date",
+            "rows": [
+              { "id": "DATE_TODAY", "title": "xyz" },
+              { "id": "DATE_TOMORROW", "title": "xyz" },
+              { "id": "DATE_DAY_AFTER_TOMORROW", "title": "xyz" },
+              { "id": "DATE_OTHER", "title": "xyz" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
+=========Button Message API Call ==========
+
+{
+  "messages": [
+    {
+      "message_type": "non_template_message",
+      "recipients": [ { "name": "Pankaj", "mobile_no": "917488430065" }],
+      "kind": "buttons",
+      "buttons": {
+        "body": "How can we help you?",
+        "footer": "Simple Dairy Support",
+        "buttons": [
+          { "id": "ORDER", "title": "Place Order" },
+          { "id": "TRACK", "title": "Track Order" },
+          { "id": "HELP",  "title": "Talk to Support" }
+        ]
+      }
+    }
+  ]
+}
+
+

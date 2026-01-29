@@ -7,7 +7,7 @@
       <div class="relative flex-1 flex items-center justify-center">
         <%= f.text_area :body_text, placeholder: "Type a message", rows: 1, onkeydown: "if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); this.form.requestSubmit(); }", data: { controller: "autosize" , autosizeMaxHeightValue: 150  }, class: "w-full p-3 pl-12 rounded-2xl resize-none overflow-hidden leading-snug outline-none bg-[rgb(var(--input-bg))] text-[rgb(var(--text))] placeholder:text-[rgb(var(--soft))] border border-[rgb(var(--input-border))] ring-1 ring-[rgb(var(--input-ring))] shadow-[var(--input-shadow-inset)] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/40 dark:shadow-none dark:ring-0"%>
 
-        <%= f.file_field :attachment, multiple: true, class: "hidden", id: "attachment", accept: "image/*,.pdf,.png,.jpeg,.doc,.docx,.xlsx", data: { action: "attachment#preview" } %>
+        <%= f.file_field :attachment, multiple: true, class: "hidden", id: "attachment", accept: "image/*,.pdf,.png,.jpeg,.doc,.docx,.xlsx,.mp4,.mp3", data: { action: "attachment#preview" } %>
 
         <button type="button" onclick="document.getElementById('attachment').click()" class="absolute left-3 top-3 text-[rgb(var(--muted))] hover:text-[rgb(var(--text))] text-xl cursor-pointer">
           <i class='bx bx-paperclip '></i>

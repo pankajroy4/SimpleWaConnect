@@ -84,9 +84,21 @@
     background-size: 420px auto;
   }
 
+  .map-preview{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("/assets/fake_map_preview.jpg");
+  }
+
   html.dark .chat-wallpaper {
     background-color: rgb(var(--chat-bg));
     background-image: url("/assets/whatsapp_bg_dark_2.png");
+  }
+
+  html.dark .map-preview{
+    background-color: rgb(var(--chat-bg));
+    background-image: url("/assets/fake_map_previe_dark.png");
   }
 }
 
