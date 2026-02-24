@@ -3,6 +3,10 @@ class Api::V1::SessionsController < Devise::SessionsController
   skip_before_action :verify_signed_out_user
   before_action :disable_session
 
+  rescue_from StandardError do |e|
+    render json: { success: false, error: e.message }, status: :unprocessable_entity
+  end
+
   def create
     # Revoke all previous token on new login.
     resource = warden.authenticate!(auth_options)
